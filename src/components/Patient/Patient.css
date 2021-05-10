@@ -1,0 +1,64 @@
+
+.options{
+    
+    height: 100vh;
+    
+}
+.options-title{
+  height: 35%;
+  /* border:1px solid;  */
+  text-align: center;
+  font-size: 30px;
+  padding-top: 20px;
+}
+.options-title > *{
+  /* border:1px solid; */
+  margin:30px;
+}
+.options-body{
+  height: 65%;
+  display: flex;
+  justify-content: center;
+  
+  /* border:1px solid; */
+}
+.options-body a{
+    height: 15vw;
+    width:15vw;
+    margin:1vw;
+    display: inline-block;
+    font-size: 100px;
+    text-align: center;
+    line-height: 15vw;
+    border-radius: 35px;
+    box-shadow: 1px 1px 7px -1px rgba(0,0,0,0.75); 
+    transition: transform .2s;
+    color:#1e90ff;
+    position:relative;
+    
+}
+.options-body a:hover{
+    cursor: pointer;
+    transform:scale(1.02);
+    box-shadow: 1px 1px 10px -1px rgba(0,0,0,0.75); 
+}
+.options-body a .tooltiptext{
+  opacity: 0;
+  font-size: 20px;
+  position: absolute;
+  z-index: 1;
+  color:black;
+  line-height: 3vw;
+  bottom:0;
+  left:0;
+  right: 0;
+  padding:0 15px;
+  color: white;
+  font-weight: bolder;
+  border-radius: 0 0 35px 35px;
+  transition: opacity, background-color .2s;
+}
+.options-body a:hover .tooltiptext{
+  opacity: 1;
+  background-color: rgba(55, 55, 55, 0.5);
+}
