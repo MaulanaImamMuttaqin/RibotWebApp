@@ -1,0 +1,10 @@
+.add-form input{
+    display: block;
+    width:50vw;
+    height: 3vw;
+    border-radius: 50px;
+    margin-right:5px;
+    outline: none;
+    margin: 2vw;
+    padding-left:30px;
+}
