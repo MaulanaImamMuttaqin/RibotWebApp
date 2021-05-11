@@ -3,10 +3,14 @@ import {motion} from "framer-motion"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import "./Search.css"
 import firebase from "../../../firebase";
+import { useHistory } from 'react-router';
 
 export default function Search() {
     const db = firebase.firestore()
     const patient = db.collection("patient")
+
+    const history = useHistory()
+    
 
     const [input, setInput] = useState("")
     const [load, setLoad] = useState(false)
@@ -36,6 +40,10 @@ export default function Search() {
       
     }
     
+    const patientDetail = (nik)=>{
+        history.push(`/Patient/Detail/${nik}`)
+    }
+
     return (
         <motion.div>
             <div className="search">
@@ -54,20 +62,16 @@ export default function Search() {
                         {/* {load ? <h1>Fetching</h1> :  */}
                             <div ref={table} className="table-container">
                                 <div className="table table-head">
+                                    <span>No</span>
                                     <span>NAMA</span>
                                     <span>NIK</span>
-                                    <span>DOMISILI</span>
-                                    <span>E-MAIL</span>
-                                    <span>NO HP</span>
                                 </div>
 
-                                {patientData.map(data => 
-                                    <div className="table table-body">
+                                {patientData.map((data, index) => 
+                                    <div className="table table-body" onClick={()=>patientDetail(data.nik)} key={data.nik}>
+                                        <span>{index+1}</span>
                                         <span>{data.name}</span>
                                         <span>{data.nik}</span>
-                                        <span>{data.domisili}</span>
-                                        <span>{data.email}</span>
-                                        <span>{data.no_hp}</span>
                                     </div>
                                 )}
                             </div>

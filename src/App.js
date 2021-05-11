@@ -8,6 +8,7 @@ import Monitor from "./components/Monitor/Monitor"
 import Dashboard from "./components/Dashboard/Dashboard"
 import Search from './components/Patient/Subcomponents/Search';
 import Add from './components/Patient/Subcomponents/Add';
+import Detail from './components/Patient/Subcomponents/Detail';
 
 
 const routervariants = {
@@ -31,7 +32,7 @@ function App() {
     setLoc(locate.split("/")[1])
 
     for (const obj in routebutton.current){
-      routebutton.current[obj].style.backgroundColor = "transparent";
+      routebutton.current[obj].style.backgroundColor = "white";
       Object.assign(routebutton.current[obj].style, {
         backgroundColor : "transparent",
         color: "#222222"
@@ -64,6 +65,7 @@ function App() {
 
           <AnimatePresence>
             <Switch location={location} key={location.key}>
+              <Route path='/Patient/Detail/:nik' component={Detail}/>
               <Route path='/Patient/Search' component={Search}/>
               <Route path='/Patient/Add' component={Add}/>  
               <Route path='/Patient' component={Patient}/>

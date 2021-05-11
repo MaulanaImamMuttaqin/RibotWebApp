@@ -5,7 +5,6 @@
     opacity: 0;
     transition: opacity .3s;
     height: 20px;
-    border:1px solid;
     margin:5px;
 }
 
@@ -41,7 +40,7 @@
     justify-content: center;
 }
 .table-container{
-    width:80%;
+    width:60%;
     display: none;
 }
 .table-head{
@@ -60,10 +59,14 @@
 }
 .table span{
     border-right:1px solid #ddd;
-    flex:1;
+    flex:44%;
     text-align: center;
     display: inline-block;
     line-height: 50px;
+}
+
+.table span:first-child{
+    flex:1%;
 }
 .table span:last-child{
     border:none
@@ -75,3 +78,7 @@
     border-right:1px solid rgb(245, 244, 244);
 }
 
+.table-body:hover{
+    background-color: #a0a0a0;
+    cursor:pointer
+}

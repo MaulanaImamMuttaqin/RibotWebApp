@@ -50,7 +50,7 @@ export default function Patient() {
             <FontAwesomeIcon icon="search"/>
           </Link>
           <Link to='/Patient/Add'>
-            <span class="tooltiptext">Add Patient</span>
+            <span className="tooltiptext">Add Patient</span>
             <FontAwesomeIcon icon="plus"/>
           </Link>
         </div>
