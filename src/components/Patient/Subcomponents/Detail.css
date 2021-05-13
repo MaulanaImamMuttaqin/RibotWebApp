@@ -1,10 +1,4 @@
-.record{
-    
-   
-    
-    
 
-}
 
 .doctor{
     display: flex;
@@ -77,9 +71,12 @@
     display: inline;
     border-bottom:1px solid;
 }
+
 .open{
     height: auto;
 }
+
+
 
 .modal{
     height: 500px;
@@ -91,4 +88,19 @@
     background-color: var(--lightgrey);
     box-shadow: var(--shadow);
     border-radius: 30px;
+}
+.modal input{
+    margin: 1   0px 0;
+}
+.modal label{
+    display: block;
+}
+.modal .addrecord{
+    display: block;
+    width:90%;
+    height: 3vw;
+    border-radius: 50px;
+    outline: none;
+    padding-left:30px;
+    
 }
