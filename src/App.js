@@ -9,6 +9,8 @@ import Dashboard from "./components/Dashboard/Dashboard"
 import Search from './components/Patient/Subcomponents/Search';
 import Add from './components/Patient/Subcomponents/Add';
 import Detail from './components/Patient/Subcomponents/Detail';
+import Login from './components/Auth/Login';
+import { AuthProvider } from './Auth/AuthContext';
 
 
 const routervariants = {
@@ -50,6 +52,7 @@ function App() {
 
   return (
     <div>
+        <AuthProvider>
           <div className="router">
             <motion.div className="router-container" 
             variants={routervariants}
@@ -62,7 +65,7 @@ function App() {
               
             </motion.div>
           </div>
-
+          <button>SIGN OUT</button>
           <AnimatePresence>
             <Switch location={location} key={location.key}>
               <Route path='/Patient/Detail/:nik' component={Detail}/>
@@ -70,9 +73,11 @@ function App() {
               <Route path='/Patient/Add' component={Add}/>  
               <Route path='/Patient' component={Patient}/>
               <Route path='/Monitor' component={Monitor}/>
+              <Route path='/Login' component={Login}/>
               <Route path='/' component={Dashboard}/>
             </Switch>
           </AnimatePresence>
+        </AuthProvider>
           
     </div>
           
