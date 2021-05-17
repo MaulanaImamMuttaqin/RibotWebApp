@@ -12,15 +12,15 @@
 }
 .title{
     border-bottom: 3px solid var(--lightblue);
-    margin-bottom:30px;
-    padding:0
-}
-.title h1{
-    margin:0;
-}
+    margin-bottom:15px; 
+}   
+
 
 .flexer{
     display: flex;
+}
+.vertical-center{
+    align-items: center;
 }
 .spread{
     justify-content: space-between;

@@ -14,9 +14,12 @@ export default function Detail() {
     const [patRec, setPatRec] = useState([])
     const [newDoc, setNewDoc] = useState(false)
 
+    const [dates, setDates] = useState([])
+    const [desc, setDesc] = useState({})
+    const [docId, setDocId] = useState("")
+
 
     
-
     useEffect(()=>{
         patient.doc(nik)
             .get()
@@ -32,11 +35,18 @@ export default function Detail() {
                 const record = []
                 result.forEach(doc =>{
                     record.push([doc.data(), doc.id])
+                    // record.push(doc.data())
                 })
+                setDesc(record[0][0]["record"][0])
+                setDates(record[0][0]["record"])
                 setPatRec(record)
             })
         
     },[])
+
+    useEffect(()=>{
+        setDesc({})
+    },[docId])
 
     const sendNewRecordValue = (input) =>{
         const {date, subject, description, drug, disease, docId} = input;
@@ -68,15 +78,14 @@ export default function Detail() {
         });
     }
 
+    const isEmpty = (obj) => {
+        return Object.keys(obj).length === 0;
+    }
+    
     return (
         <div className="container">
             {newDoc && <NewDoctorModal sendNewDocValue={createNewDoctor}/>}
             <div className="patient-detail">
-                {/* <div><span>NAMA</span>   |  {patData.name}</div>
-                <div><span>NIK</span>   |  {patData.nik}</div>
-                <div><span>DOMISILI</span>   |  {patData.domisili}</div>
-                <div><span>E-MAIL</span>   |  {patData.email}</div>
-                <div><span>NO HP</span>   |  {patData.no_hp}</div> */}
                 <div className="title">
                     <h1>Patient's Profile</h1>
                 </div>
@@ -135,49 +144,130 @@ export default function Detail() {
                 </div>
             </div>
             <div className="patient-records">
-                <div className="title flexer spread">
+                <div className="title">
                     <h1>Patient's Record</h1>
-
-                    <div >
-                        <button className="add-doc" onClick={()=> setNewDoc(!newDoc)}><FontAwesomeIcon icon="user-plus"/></button>
-                    </div>
-                    
                 </div>
                 <div className="records">
-                    {patRec.map((rec, index) =>
-                        <Records key={index} Data={rec[0]} docId={rec[1]} sendNewRecordValue={sendNewRecordValue}/>
-                    )}
+                    <div className="doctorlist">    
+                        <div className="title flexer spread vertical-center">
+                            <h3>Doctor List</h3>
+                            <div >
+                                <button className="addNewdData" onClick={()=> setNewDoc(!newDoc)}><FontAwesomeIcon icon="user-plus"/></button>
+                            </div>
+                        </div>
+                        <div className="list">
+                            {patRec.map((rec, index) =>
+                                <Doctors key={index} Data={rec[0]} docId={rec[1]} setDocId={setDocId} setDates={setDates}/>
+                            )}
+                        </div>
+                    </div>
+                    <div className="dateslist">
+                        <div className="title flexer spread vertical-center">
+                            <h3>Dates List</h3>
+                            <div >
+                                <button className="addNewdData" onClick={()=> console.log(docId)}><FontAwesomeIcon icon="calendar-plus"/></button>
+                            </div>
+                        </div>
+                        <div className="list">
+                        {
+                            dates.map((date, index) =>
+                                <DatesList key={index} Data={date} setDesc={setDesc} />
+                            )
+                        }
+                        </div>
+                    </div>
+                    <div className="description">
+                        <div className="title">
+                            <h3>Description</h3>
+                        </div>
+                        {!isEmpty(desc) &&
+                            <div className="desc">
+                                <p>Keluhan</p>
+                                <p>{desc.description}</p>
+                                <p>Pengobatan</p>
+                                <ul>
+                                    {desc.treatment.map(drug=>
+                                        <li key={drug}>{drug}</li>
+                                    )}
+                                    
+                                </ul>
+                                <p>Penyakit</p>
+                            <p>{desc.conclusion}</p>
+                            </div>
+                        }
+                        
+                    </div>
                 </div>
             </div>
         </div>
     )
 }
 
+function Doctors({Data, setDates, docId, setDocId}){
+    const dates = Data.record
+    
+    const DocClick= (e)=>{
+        setDates(dates)
+        setDocId(docId)
+        e.target.parentNode.childNodes.forEach(node=>{
+            node.classList.remove("highlight")
+        })
+        e.target.classList.toggle("highlight")
+    }
 
-function Records({Data, docId, sendNewRecordValue}){
-    const [open, setOpen] = useState(false)
-    const [recModal, setRecModal] = useState(false)
-
-
-    return (
-        <div className="record">
-            {recModal && <AddModal sendNewRecordValue={sendNewRecordValue} docId={docId}/>}
-
-            <div className="doctor" onClick={()=> setOpen(!open)}>
-                <span>{Data.doctor.name}</span><span>{Data.doctor.speciality}</span>
-            </div>
-
-            <div className={`record-dates ${open && "open"}`}>
-                <button onClick={()=>setRecModal(!recModal)}>add</button>
-                
-                {Data.record.map((rec, index) =>
-                    <Dates key={index} Record={rec} />
-                    
-                )}
-            </div>
+    return(
+        <div className="doctor" onClick={DocClick}>
+            <span>{Data.doctor.name}</span>
+            <FontAwesomeIcon icon="chevron-right" />
         </div>
     )
 }
+
+function DatesList({Data, setDesc}){
+
+    const DateClick = (e)=>{
+        setDesc(Data)
+        e.target.parentNode.childNodes.forEach(node=>{
+            node.classList.remove("highlight")
+        })
+        e.target.classList.toggle("highlight")
+    }
+    return(
+        <div className="dates" onClick={DateClick}>
+            <span>{Data.date.toDate().toDateString()}</span>
+            <FontAwesomeIcon icon="chevron-right" />
+        </div>
+    )
+
+}
+
+
+// function Records({Data, docId, sendNewRecordValue}){
+//     const [open, setOpen] = useState(false)
+//     const [recModal, setRecModal] = useState(false)
+
+
+//     return (
+//         <div className="record">
+//             {recModal && <AddModal sendNewRecordValue={sendNewRecordValue} docId={docId}/>}
+
+            
+
+//             <div className="doctor" onClick={()=> setOpen(!open)}>
+//                 <span>{Data.doctor.name}</span><span>{Data.doctor.speciality}</span>
+//             </div>
+
+//             {/* <div className={`record-dates ${open && "open"}`}>
+//                 <button onClick={()=>setRecModal(!recModal)}>add</button>
+                
+//                 {Data.record.map((rec, index) =>
+//                     <Dates key={index} Record={rec} />
+                    
+//                 )}
+//             </div> */}
+//         </div>
+//     )
+// }
 
 function NewDoctorModal({sendNewDocValue}){
     const input ={
@@ -206,67 +296,67 @@ function NewDoctorModal({sendNewDocValue}){
     )
 }
 
-function AddModal({sendNewRecordValue, docId}){
-    const input ={
-        docId: docId
-    }
+// function AddModal({sendNewRecordValue, docId}){
+//     const input ={
+//         docId: docId
+//     }
     
 
-    const inputValue = (e, name) => {
-        input[name] = e.target.value
-    }
+//     const inputValue = (e, name) => {
+//         input[name] = e.target.value
+//     }
 
     
 
-    return(
-        <div className="modal">
-            <div>
-                <form onSubmit={e=> e.preventDefault()}>
-                    <label htmlFor="date">tanggal</label>
-                        <input onChange={(e) => inputValue(e, "date")} id="date" type="date" required/>
-                    <label htmlFor="subject">Subject</label>
-                        <input onChange={(e) => inputValue(e, "subject")} id="subject" className="addrecord" type="text" placeholder="subject"required/>
-                    <label htmlFor="description">Keterangan</label>
-                        <textarea onChange={(e) => inputValue(e, "description")} id="description" type="text" placeholder="Keterangan" rows="10" cols="50"required/>
-                    <label htmlFor="drug">Obat</label>
-                        <input onChange={(e) => inputValue(e, "drug")} id="drug" className="addrecord" type="text" placeholder="Obat yang diberikan, ex: nama_obat(dosis), namaobat2(dosis)"required/>
-                    <label htmlFor="disease">Penyakit</label>
-                        <input onChange={(e) => inputValue(e, "disease")} id="disease" className="addrecord"  type="text"  placeholder="Penyakit yang diduga"required/>  
+//     return(
+//         <div className="modal">
+//             <div>
+//                 <form onSubmit={e=> e.preventDefault()}>
+//                     <label htmlFor="date">tanggal</label>
+//                         <input onChange={(e) => inputValue(e, "date")} id="date" type="date" required/>
+//                     <label htmlFor="subject">Subject</label>
+//                         <input onChange={(e) => inputValue(e, "subject")} id="subject" className="addrecord" type="text" placeholder="subject"required/>
+//                     <label htmlFor="description">Keterangan</label>
+//                         <textarea onChange={(e) => inputValue(e, "description")} id="description" type="text" placeholder="Keterangan" rows="10" cols="50"required/>
+//                     <label htmlFor="drug">Obat</label>
+//                         <input onChange={(e) => inputValue(e, "drug")} id="drug" className="addrecord" type="text" placeholder="Obat yang diberikan, ex: nama_obat(dosis), namaobat2(dosis)"required/>
+//                     <label htmlFor="disease">Penyakit</label>
+//                         <input onChange={(e) => inputValue(e, "disease")} id="disease" className="addrecord"  type="text"  placeholder="Penyakit yang diduga"required/>  
 
-                    <button onClick={()=> sendNewRecordValue(input)}>TAMBAH</button> 
-                </form>
-            </div>
-        </div>
-    )
-}
+//                     <button onClick={()=> sendNewRecordValue(input)}>TAMBAH</button> 
+//                 </form>
+//             </div>
+//         </div>
+//     )
+// }
 
-function Dates({Record}){   
-    const [open, setOpen] =useState(false)
+// function Dates({Record}){   
+//     const [open, setOpen] =useState(false)
 
-    const toogleDropDown = ()=>{
-        setOpen(!open)
-    }
+//     const toogleDropDown = ()=>{
+//         setOpen(!open)
+//     }
 
-    return(
-        <div>
-            <div className="date" onClick={(toogleDropDown)}>{Record.date.toDate().toDateString()}, ( {Record.subject} )</div>
-            <div className={` description ${open && "open"}`}>
-                <div className="description-container">
-                    <p>Keluhan</p>
-                    <p>{Record.description}</p>
-                    <p>Pengobatan</p>
-                    <ul>
-                        {Record.treatment.map(drug=>
-                            <li key={drug}>{drug}</li>
-                        )}
+//     return(
+//         <div>
+//             <div className="date" onClick={(toogleDropDown)}>{Record.date.toDate().toDateString()}, ( {Record.subject} )</div>
+//             <div className={` description ${open && "open"}`}>
+//                 <div className="description-container">
+//                     <p>Keluhan</p>
+//                     <p>{Record.description}</p>
+//                     <p>Pengobatan</p>
+//                     <ul>
+//                         {Record.treatment.map(drug=>
+//                             <li key={drug}>{drug}</li>
+//                         )}
                         
-                    </ul>
-                    <p>Penyakit</p>
-                    <p>{Record.conclusion}</p>
-                </div>
+//                     </ul>
+//                     <p>Penyakit</p>
+//                     <p>{Record.conclusion}</p>
+//                 </div>
                 
                 
-            </div>
-        </div>
-    )
-}
+//             </div>
+//         </div>
+//     )
+// }
