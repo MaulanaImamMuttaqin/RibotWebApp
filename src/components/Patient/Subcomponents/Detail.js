@@ -2,7 +2,7 @@ import React, { useState, useEffect , useRef} from 'react'
 import { useParams } from 'react-router-dom'
 import firebase from "../../../firebase";
 import "./Detail.css"
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function Detail() {
     const db = firebase.firestore()
@@ -72,16 +72,76 @@ export default function Detail() {
         <div className="container">
             {newDoc && <NewDoctorModal sendNewDocValue={createNewDoctor}/>}
             <div className="patient-detail">
-                <div><span>NAMA</span>   |  {patData.name}</div>
+                {/* <div><span>NAMA</span>   |  {patData.name}</div>
                 <div><span>NIK</span>   |  {patData.nik}</div>
                 <div><span>DOMISILI</span>   |  {patData.domisili}</div>
                 <div><span>E-MAIL</span>   |  {patData.email}</div>
-                <div><span>NO HP</span>   |  {patData.no_hp}</div>
+                <div><span>NO HP</span>   |  {patData.no_hp}</div> */}
+                <div className="title">
+                    <h1>Patient's Profile</h1>
+                </div>
+                <div>
+                    <div className="patient-bio">
+                        <div>
+                            <div className="patient-img">
+                                <img src="https://i.picsum.photos/id/40/4106/2806.jpg?hmac=MY3ra98ut044LaWPEKwZowgydHZ_rZZUuOHrc3mL5mI" alt="" srcset="" height="90" width="90"/>
+                            </div>
+                            <div className="patient-name">
+                                <span>{patData.name}</span>
+                                <span>20 years old | Male</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <span><FontAwesomeIcon icon="child"/> Weight</span>
+                                <span>55 Kg</span>
+                            </div>
+                            <div>
+                                <span><FontAwesomeIcon icon="ruler-vertical"/> Height</span>
+                                <span>170 cm</span>
+                            </div>
+                            <div>
+                                <span><FontAwesomeIcon icon="tint"/> Blood Type</span>
+                                <span>O+</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="patient-profile">
+                        <div>
+                            <span>Birth Date</span>
+                            <span>23-11-2000</span>
+                        </div>
+                        <div>
+                            <span>NIK</span>
+                            <span>{patData.nik}</span>
+                        </div>
+                        <div>
+                            <span>E-mail</span>
+                            <span>{patData.email}</span>
+                        </div>
+                        <div>
+                            <span>Phone Number</span>
+                            <span>{patData.no_hp}</span>
+                        </div>
+                        <div>
+                            <span>Domicile</span>
+                            <span>{patData.domisili}</span>
+                        </div>
+                        <div>
+                            <span>Birth Date</span>
+                            <span>tes</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div className="patient-records">
-                <div className="title">
-                    <h1>Riwayat Pasien</h1>
-                    <button onClick={()=> setNewDoc(!newDoc)}>Add New Doctor</button>
+                <div className="title flexer spread">
+                    <h1>Patient's Record</h1>
+
+                    <div >
+                        <button className="add-doc" onClick={()=> setNewDoc(!newDoc)}><FontAwesomeIcon icon="user-plus"/></button>
+                    </div>
+                    
                 </div>
                 <div className="records">
                     {patRec.map((rec, index) =>

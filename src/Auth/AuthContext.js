@@ -14,17 +14,17 @@ export function AuthProvider({children}){
 
     useEffect(()=>{
         firebase.auth().onAuthStateChanged((user)=>{
-            setCurrentUser(user)
+            if(user){
+                setCurrentUser(user)
+            }else if (!user && (location.pathname != "/Login")){
+                console.log("not logged in")
+                history.push("/Login")
+                
+            }
+            
         })
 
     },[])
-
-    
-    // if(currentUser == null && (location.pathname != "/Login")){
-    //     history.push("/Login")
-    // }else if (currentUser != null){
-    //     history.push("/")
-    // }
 
 
     return (

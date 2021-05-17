@@ -4,16 +4,24 @@
     --lightgrey: rgb(245, 245, 245);
 }
 .container{
-    height: 100vh;
-    margin:1vw;
+    height: auto;
+    margin:8vw 1vw 1vw 1vw;
 }
 .div-container{
     margin:1vw;
 }
 .title{
     border-bottom: 3px solid var(--lightblue);
+    margin-bottom:30px;
     padding:0
 }
 .title h1{
     margin:0;
+}
+
+.flexer{
+    display: flex;
+}
+.spread{
+    justify-content: space-between;
 }

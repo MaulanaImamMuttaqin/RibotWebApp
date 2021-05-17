@@ -33,7 +33,7 @@ export default function Add() {
         });
     }
     return (
-        <motion.div>
+        <motion.div className="container">
             <div className="add">
                 <div className="add-title">
                     <h1>Add New Patient</h1>

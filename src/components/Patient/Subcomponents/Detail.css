@@ -1,3 +1,79 @@
+.patient-detail > div:last-child{
+    border:1px solid;
+    height: 280px;
+    padding: 10px;
+    display: flex;
+    border-radius: 10px;
+    margin-bottom:30px;
+}
+
+.patient-bio{
+    flex:40%;
+    display: flex;
+    flex-direction: column;
+    border:1px solid;
+    border-radius: 10px;
+    background-color: white;
+    margin:5px;
+}
+    .patient-bio div{
+        flex:50%;
+        display: flex;
+    }
+        .patient-bio div:first-child .patient-img{
+            flex:30%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+            .patient-bio div:first-child .patient-img img{
+                border-radius: 50%;
+            }
+        .patient-bio div:first-child .patient-name{
+            flex:70%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-size: 20px;
+            margin: 10px;
+        }
+
+        .patient-bio div:last-child div{
+            flex:33%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            
+        }
+        .patient-bio div:last-child div span{
+            margin:5px;
+            font-size: 20px;
+            font-weight: bolder;
+        }
+
+.patient-profile{
+    flex:60%;
+    border:1px solid;
+    border-radius: 10px;
+    background-color: white;
+    margin:5px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+}
+    .patient-profile div{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        font-size: 20px;
+    }
+        .patient-profile div span:first-child{
+            font-weight: bolder;
+        }
+
+
+
 
 
 .doctor{
@@ -12,7 +88,22 @@
     align-items: center;
     background-color: var(--lightgrey)
 }
-
+.add-doc{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    outline: none;
+    font-size: 20px;
+    margin-bottom:10px;
+    border:1px solid var(--lightblue)
+}
+.records{
+    border:1px solid;
+    margin-bottom:60px;
+}
+.record{
+    margin-bottom:10px;
+}
 .record span{
     display: inline-block;
     padding:2px;

@@ -1,0 +1,37 @@
+.header{
+    border:1px solid;
+    padding:5px;
+    height: 70px;
+    width: 100%;
+    display: flex;
+    background-color: white;
+    justify-content: space-between;
+    align-items: center;
+    position:fixed;
+    top:0;
+    box-shadow:  var(--shadow);
+}
+
+
+.header .user{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    width:300px;
+}
+.user div{
+    margin-right: 10px;
+}
+.user .user-profile{
+    border-radius: 50%;
+    height: 45px;
+    width: 45px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border:1px solid;
+}
+.user-profile .icon{
+    font-size: 20px;
+}

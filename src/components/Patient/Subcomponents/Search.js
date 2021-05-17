@@ -45,7 +45,7 @@ export default function Search() {
     }
 
     return (
-        <motion.div>
+        <motion.div className="container">
             <div className="search">
                 <div className="search-title">
 
@@ -63,8 +63,9 @@ export default function Search() {
                             <div ref={table} className="table-container">
                                 <div className="table table-head">
                                     <span>No</span>
-                                    <span>NAMA</span>
+                                    <span>Name</span>
                                     <span>NIK</span>
+                                    <span>E-mail</span>
                                 </div>
 
                                 {patientData.map((data, index) => 
@@ -72,6 +73,7 @@ export default function Search() {
                                         <span>{index+1}</span>
                                         <span>{data.name}</span>
                                         <span>{data.nik}</span>
+                                        <span>{data.email}</span>
                                     </div>
                                 )}
                             </div>

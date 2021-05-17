@@ -1,0 +1,36 @@
+.router {
+    margin:0;
+    padding:15px;
+    position:fixed;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+}
+
+.router-container{
+    position:fixed;
+    display: flex;
+    justify-content:space-evenly;
+    border-radius: 50px;
+    padding: 0 10px;
+    box-shadow: var(--shadow);
+    width:25vw;
+    height: 50px;
+    background-color: white;
+    
+}
+
+.router a{
+    box-shadow: var(--shadow);
+    padding: 7px 12px;
+    margin: 7px 20px;
+    border-radius: 50px;
+    text-decoration: none;
+    color: rgb(34, 34, 34);
+    font-weight:bolder;
+    transition: background-color,color .2s;
+}
