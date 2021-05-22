@@ -374,17 +374,3 @@ function AddModal({docId, setNewRec, newRec , nik, patient}){
     )
 }
 
-{/* <form onSubmit={e=> e.preventDefault()}>
-                    <label htmlFor="date">tanggal</label>
-                        <input onChange={(e) => inputValue(e, "date")} id="date" type="date" required/>
-                    <label htmlFor="subject">Subject</label>
-                        <input onChange={(e) => inputValue(e, "subject")} id="subject" className="addrecord" type="text" placeholder="subject"required/>
-                    <label htmlFor="description">Keterangan</label>
-                        <textarea onChange={(e) => inputValue(e, "description")} id="description" type="text" placeholder="Keterangan" rows="10" cols="50"required/>
-                    <label htmlFor="drug">Obat</label>
-                        <input onChange={(e) => inputValue(e, "drug")} id="drug" className="addrecord" type="text" placeholder="Obat yang diberikan, ex: nama_obat(dosis), namaobat2(dosis)"required/>
-                    <label htmlFor="disease">Penyakit</label>
-                        <input onChange={(e) => inputValue(e, "disease")} id="disease" className="addrecord"  type="text"  placeholder="Penyakit yang diduga"required/>  
-
-                    <button onClick={()=> sendNewRecordValue(input)}>TAMBAH</button> 
-                </form> */}
