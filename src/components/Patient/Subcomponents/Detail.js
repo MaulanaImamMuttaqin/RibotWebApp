@@ -3,23 +3,26 @@ import { useParams } from 'react-router-dom'
 import firebase from "../../../firebase";
 import "./Detail.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {useForm} from "react-hook-form"
 
 export default function Detail() {
     const db = firebase.firestore()
     const patient = db.collection("patient")
 
-    const {nik} = useParams()
+    // useform buat validasi data form 
+    const { register, handleSubmit, errors, reset  } = useForm();
+
+    const {nik} = useParams() // ambil no nik dari url untuk ambil data patient
     
-    const [patData, setPatData] = useState({})
-    const [patRec, setPatRec] = useState([])
-    const [newDoc, setNewDoc] = useState(false)
+    const [patData, setPatData] = useState({}) // simpan data pribadi patient
+    const [patRec, setPatRec] = useState([]) // simpan semua data record diambil dari database
+    const [newDoc, setNewDoc] = useState(false) // atur modal untuk menambah dokter baru
+    const [newRec, setNewRec] = useState(false) // atur modal untuk mengupload tanggal baru
+    const [dates, setDates] = useState([]) // simpan tanggal yang sedang di pilih
+    const [desc, setDesc] = useState({}) // simpan data deskripsi yang sedang di tampilkan
+    const [docId, setDocId] = useState("") // simpan id document doctor
 
-    const [dates, setDates] = useState([])
-    const [desc, setDesc] = useState({})
-    const [docId, setDocId] = useState("")
 
-
-    
     useEffect(()=>{
         patient.doc(nik)
             .get()
@@ -37,37 +40,23 @@ export default function Detail() {
                     record.push([doc.data(), doc.id])
                     // record.push(doc.data())
                 })
-                setDesc(record[0][0]["record"][0])
-                setDates(record[0][0]["record"])
+                console.log(record)
                 setPatRec(record)
             })
         
     },[])
 
+    // useeffect buat mereset nilai desc kalau doctor yang lain di tekan 
     useEffect(()=>{
         setDesc({})
     },[docId])
 
-    const sendNewRecordValue = (input) =>{
-        const {date, subject, description, drug, disease, docId} = input;
-        let timestamp = firebase.firestore.Timestamp.fromDate(new Date(date));
-        patient.doc(nik).collection("riwayatberobat").doc(docId).update({
-            record: firebase.firestore.FieldValue.arrayUnion({
-                conclusion: disease,
-                date: timestamp,
-                description: description,
-                subject:subject,
-                treatment: drug.replace(/\s/g, '').split(",")
-            })            
-        })
-        .then(() => {
-            console.log("success");
-        })
-        .catch((error) => {
-            console.error("failed: ", error);
-        });
-    }
 
+    useEffect(()=>{
+        console.log("data added")
+    },[setPatRec])
+
+    // fungsi untuk mengambah doktor baru
     const createNewDoctor = (input)=>{
         patient.doc(nik).collection("riwayatberobat").add(input)
         .then((docRef) => {
@@ -78,6 +67,7 @@ export default function Detail() {
         });
     }
 
+    // check object kosong atua tidak 
     const isEmpty = (obj) => {
         return Object.keys(obj).length === 0;
     }
@@ -85,6 +75,7 @@ export default function Detail() {
     return (
         <div className="container">
             {newDoc && <NewDoctorModal sendNewDocValue={createNewDoctor}/>}
+            {newRec && <AddModal docId={docId} setNewRec={setNewRec} newRec={newRec} nik={nik} patient={patient}/>}
             <div className="patient-detail">
                 <div className="title">
                     <h1>Patient's Profile</h1>
@@ -136,10 +127,6 @@ export default function Detail() {
                             <span>Domicile</span>
                             <span>{patData.domisili}</span>
                         </div>
-                        <div>
-                            <span>Birth Date</span>
-                            <span>tes</span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -165,7 +152,7 @@ export default function Detail() {
                         <div className="title flexer spread vertical-center">
                             <h3>Dates List</h3>
                             <div >
-                                <button className="addNewdData" onClick={()=> console.log(docId)}><FontAwesomeIcon icon="calendar-plus"/></button>
+                                <button className="addNewdData" onClick={()=> setNewRec(!newRec)}><FontAwesomeIcon icon="calendar-plus"/></button>
                             </div>
                         </div>
                         <div className="list">
@@ -203,16 +190,18 @@ export default function Detail() {
     )
 }
 
+// component function buat nampilin list doctor
 function Doctors({Data, setDates, docId, setDocId}){
     const dates = Data.record
-    
+
     const DocClick= (e)=>{
         setDates(dates)
         setDocId(docId)
-        e.target.parentNode.childNodes.forEach(node=>{
+        e.currentTarget.parentNode.childNodes.forEach(node=>{
             node.classList.remove("highlight")
         })
-        e.target.classList.toggle("highlight")
+        e.currentTarget.classList.add("highlight")
+        
     }
 
     return(
@@ -223,14 +212,15 @@ function Doctors({Data, setDates, docId, setDocId}){
     )
 }
 
+// component functin buat nampilin list tanggal dari tiap doctor yang berbeda
 function DatesList({Data, setDesc}){
 
     const DateClick = (e)=>{
         setDesc(Data)
-        e.target.parentNode.childNodes.forEach(node=>{
+        e.currentTarget.parentNode.childNodes.forEach(node=>{
             node.classList.remove("highlight")
         })
-        e.target.classList.toggle("highlight")
+        e.currentTarget.classList.toggle("highlight")
     }
     return(
         <div className="dates" onClick={DateClick}>
@@ -242,33 +232,8 @@ function DatesList({Data, setDesc}){
 }
 
 
-// function Records({Data, docId, sendNewRecordValue}){
-//     const [open, setOpen] = useState(false)
-//     const [recModal, setRecModal] = useState(false)
 
-
-//     return (
-//         <div className="record">
-//             {recModal && <AddModal sendNewRecordValue={sendNewRecordValue} docId={docId}/>}
-
-            
-
-//             <div className="doctor" onClick={()=> setOpen(!open)}>
-//                 <span>{Data.doctor.name}</span><span>{Data.doctor.speciality}</span>
-//             </div>
-
-//             {/* <div className={`record-dates ${open && "open"}`}>
-//                 <button onClick={()=>setRecModal(!recModal)}>add</button>
-                
-//                 {Data.record.map((rec, index) =>
-//                     <Dates key={index} Record={rec} />
-                    
-//                 )}
-//             </div> */}
-//         </div>
-//     )
-// }
-
+// modal buat menambah dokter baru
 function NewDoctorModal({sendNewDocValue}){
     const input ={
         doctor:{},
@@ -296,67 +261,130 @@ function NewDoctorModal({sendNewDocValue}){
     )
 }
 
-// function AddModal({sendNewRecordValue, docId}){
-//     const input ={
-//         docId: docId
-//     }
+
+// modal buat nambah tanggal baru 
+function AddModal({docId, setNewRec, newRec , nik, patient}){
+    // const input ={
+    //     docId: docId
+    // }
+    
+    const { register, handleSubmit, errors, reset  } = useForm();
+
+    const sendNewRecordValue = data =>{
+        const {date, subject, description, drug, diagnose} = data;
+        let timestamp = firebase.firestore.Timestamp.fromDate(new Date(date));
+        patient.doc(`/${nik}/riwayatberobat/${docId}`).update({
+            record: firebase.firestore.FieldValue.arrayUnion({
+                conclusion: diagnose,
+                date: timestamp,
+                description: description,
+                subject:subject,
+                treatment: drug.replace(/\s/g, '').split(",")
+            })            
+        })
+        .then(() => {
+            console.log("success");
+        })
+        .catch((error) => {
+            console.error("failed: ", error);
+        });
+    }
+
     
 
-//     const inputValue = (e, name) => {
-//         input[name] = e.target.value
-//     }
+    return(
+        <div className="modal">
+                <h3>Add New Record</h3>
+                <form onSubmit={handleSubmit(sendNewRecordValue)} className="form">
+                    
+                    <div>
+                        <label htmlFor="date">Date</label>
+                        <input 
+                            type="date" 
+                            id="date"
+                            {...register('date', 
+                                {
+                                    required: true
+                                })
+                            } 
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="subject">Subject</label>
+                        <input 
+                            type="text" 
+                            id="subject"
+                            placeholder="enter the subject of this apointment"
+                            {...register('subject', 
+                                {
+                                    required: true
+                                })
+                            } 
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="description">Description</label>
+                        <textarea 
+                            type="text" 
+                            id="description"
+                            placeholder="Add description"
+                            {...register('description', 
+                                {
+                                    required: true
+                                })
+                            }
+                            rows="5" cols="50"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="drug">Treatment</label>
+                        <input 
+                            type="text" 
+                            id="drug"
+                            placeholder="Obat yang diberikan, ex: nama_obat(dosis), namaobat2(dosis)"
+                            {...register('drug', 
+                                {
+                                    required: true
+                                })
+                            } 
+                        />
 
-    
+                    </div>
+                    <div>
+                        <label htmlFor="diagnose">Diagnose</label>
+                        <input 
+                            type="text" 
+                            id="diagnose"
+                            placeholder="Diagnose"
+                            {...register('diagnose', 
+                                {
+                                    required: true
+                                })
+                            } 
+                        />
+                    </div>
+                    <div className="buttons">
+                        <button onClick={()=>setNewRec(!newRec)}>Cancel</button>
+                        <button type="submit">Upload</button>
+                        <div className="clear"></div>
+                    </div>
+                    
+                </form>
+        </div>
+    )
+}
 
-//     return(
-//         <div className="modal">
-//             <div>
-//                 <form onSubmit={e=> e.preventDefault()}>
-//                     <label htmlFor="date">tanggal</label>
-//                         <input onChange={(e) => inputValue(e, "date")} id="date" type="date" required/>
-//                     <label htmlFor="subject">Subject</label>
-//                         <input onChange={(e) => inputValue(e, "subject")} id="subject" className="addrecord" type="text" placeholder="subject"required/>
-//                     <label htmlFor="description">Keterangan</label>
-//                         <textarea onChange={(e) => inputValue(e, "description")} id="description" type="text" placeholder="Keterangan" rows="10" cols="50"required/>
-//                     <label htmlFor="drug">Obat</label>
-//                         <input onChange={(e) => inputValue(e, "drug")} id="drug" className="addrecord" type="text" placeholder="Obat yang diberikan, ex: nama_obat(dosis), namaobat2(dosis)"required/>
-//                     <label htmlFor="disease">Penyakit</label>
-//                         <input onChange={(e) => inputValue(e, "disease")} id="disease" className="addrecord"  type="text"  placeholder="Penyakit yang diduga"required/>  
+{/* <form onSubmit={e=> e.preventDefault()}>
+                    <label htmlFor="date">tanggal</label>
+                        <input onChange={(e) => inputValue(e, "date")} id="date" type="date" required/>
+                    <label htmlFor="subject">Subject</label>
+                        <input onChange={(e) => inputValue(e, "subject")} id="subject" className="addrecord" type="text" placeholder="subject"required/>
+                    <label htmlFor="description">Keterangan</label>
+                        <textarea onChange={(e) => inputValue(e, "description")} id="description" type="text" placeholder="Keterangan" rows="10" cols="50"required/>
+                    <label htmlFor="drug">Obat</label>
+                        <input onChange={(e) => inputValue(e, "drug")} id="drug" className="addrecord" type="text" placeholder="Obat yang diberikan, ex: nama_obat(dosis), namaobat2(dosis)"required/>
+                    <label htmlFor="disease">Penyakit</label>
+                        <input onChange={(e) => inputValue(e, "disease")} id="disease" className="addrecord"  type="text"  placeholder="Penyakit yang diduga"required/>  
 
-//                     <button onClick={()=> sendNewRecordValue(input)}>TAMBAH</button> 
-//                 </form>
-//             </div>
-//         </div>
-//     )
-// }
-
-// function Dates({Record}){   
-//     const [open, setOpen] =useState(false)
-
-//     const toogleDropDown = ()=>{
-//         setOpen(!open)
-//     }
-
-//     return(
-//         <div>
-//             <div className="date" onClick={(toogleDropDown)}>{Record.date.toDate().toDateString()}, ( {Record.subject} )</div>
-//             <div className={` description ${open && "open"}`}>
-//                 <div className="description-container">
-//                     <p>Keluhan</p>
-//                     <p>{Record.description}</p>
-//                     <p>Pengobatan</p>
-//                     <ul>
-//                         {Record.treatment.map(drug=>
-//                             <li key={drug}>{drug}</li>
-//                         )}
-                        
-//                     </ul>
-//                     <p>Penyakit</p>
-//                     <p>{Record.conclusion}</p>
-//                 </div>
-                
-                
-//             </div>
-//         </div>
-//     )
-// }
+                    <button onClick={()=> sendNewRecordValue(input)}>TAMBAH</button> 
+                </form> */}

@@ -6,9 +6,10 @@ import { BrowserRouter as Router} from "react-router-dom";
 import * as serviceWorker from './serviceWorker';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChartLine, faHome, faHospitalUser, faSearch, faPlus , faUser, 
-  faChild, faRulerVertical, faTint, faUserPlus, faChevronRight, faCalendarPlus} from '@fortawesome/free-solid-svg-icons'
+  faChild, faRulerVertical, faTint, faUserPlus, faChevronRight, faCalendarPlus, faTimes} from '@fortawesome/free-solid-svg-icons'
 
-library.add(faChartLine, faHome, faHospitalUser, faSearch, faPlus, faUser , faChild, faRulerVertical, faTint,faUserPlus, faChevronRight , faCalendarPlus)
+library.add(faChartLine, faHome, faHospitalUser, faSearch, faPlus, faUser , 
+  faChild, faRulerVertical, faTint,faUserPlus, faChevronRight , faCalendarPlus, faTimes)
 ReactDOM.render(
   <React.StrictMode>
     <Router>

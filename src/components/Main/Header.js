@@ -20,6 +20,7 @@ export default function Header() {
                 <h1>RibotApp</h1>
             </div>
             <div className="user">
+                <p onClick={logOut}>Logout</p>
                 <div className="user-greet">
                     <p>hello {username}</p>
                 </div>
