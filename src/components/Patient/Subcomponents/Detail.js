@@ -41,6 +41,9 @@ export default function Detail() {
                     // record.push(doc.data())
                 })
                 console.log(record)
+                console.log(docId)
+                // setDates(record[0][0]["record"])
+                datesListOnSnapshot(record)
                 setPatRec(record)
             })
         
@@ -51,11 +54,14 @@ export default function Detail() {
         setDesc({})
     },[docId])
 
-
-    useEffect(()=>{
-        console.log("data added")
-    },[setPatRec])
-
+    const datesListOnSnapshot = (record) =>{
+        console.log(docId)
+        record.forEach(rec =>{
+            if (rec[1] == docId){
+                    console.log(rec[0]["record"])
+            }
+        })
+    }
     // fungsi untuk mengambah doktor baru
     const createNewDoctor = (input)=>{
         patient.doc(nik).collection("riwayatberobat").add(input)
@@ -267,7 +273,7 @@ function AddModal({docId, setNewRec, newRec , nik, patient}){
     // const input ={
     //     docId: docId
     // }
-    
+    const [updated, setUpdated] = useState(false)
     const { register, handleSubmit, errors, reset  } = useForm();
 
     const sendNewRecordValue = data =>{
@@ -284,6 +290,7 @@ function AddModal({docId, setNewRec, newRec , nik, patient}){
         })
         .then(() => {
             console.log("success");
+            setUpdated(true)
         })
         .catch((error) => {
             console.error("failed: ", error);
@@ -295,6 +302,7 @@ function AddModal({docId, setNewRec, newRec , nik, patient}){
     return(
         <div className="modal">
                 <h3>Add New Record</h3>
+                {updated && <p>Record Succesfully Added</p>}
                 <form onSubmit={handleSubmit(sendNewRecordValue)} className="form">
                     
                     <div>
@@ -374,3 +382,17 @@ function AddModal({docId, setNewRec, newRec , nik, patient}){
     )
 }
 
+{/* <form onSubmit={e=> e.preventDefault()}>
+                    <label htmlFor="date">tanggal</label>
+                        <input onChange={(e) => inputValue(e, "date")} id="date" type="date" required/>
+                    <label htmlFor="subject">Subject</label>
+                        <input onChange={(e) => inputValue(e, "subject")} id="subject" className="addrecord" type="text" placeholder="subject"required/>
+                    <label htmlFor="description">Keterangan</label>
+                        <textarea onChange={(e) => inputValue(e, "description")} id="description" type="text" placeholder="Keterangan" rows="10" cols="50"required/>
+                    <label htmlFor="drug">Obat</label>
+                        <input onChange={(e) => inputValue(e, "drug")} id="drug" className="addrecord" type="text" placeholder="Obat yang diberikan, ex: nama_obat(dosis), namaobat2(dosis)"required/>
+                    <label htmlFor="disease">Penyakit</label>
+                        <input onChange={(e) => inputValue(e, "disease")} id="disease" className="addrecord"  type="text"  placeholder="Penyakit yang diduga"required/>  
+
+                    <button onClick={()=> sendNewRecordValue(input)}>TAMBAH</button> 
+                </form> */}
