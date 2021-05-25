@@ -2,6 +2,7 @@
     --lightblue: #1e90ff;
     --shadow: 1px 1px 7px -1px rgba(0,0,0,0.75); 
     --lightgrey: rgb(245, 245, 245);
+    --mediumgrey : rgb(182, 182, 182);
 }
 .container{
     height: auto;

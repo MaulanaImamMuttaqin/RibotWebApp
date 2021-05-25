@@ -1,4 +1,5 @@
-import React, { useState, useEffect , useRef} from 'react'
+import React, { useState, useEffect , useRef, useContext} from 'react'
+import { AuthContext } from '../../../Auth/AuthContext'
 import { useParams } from 'react-router-dom'
 import firebase from "../../../firebase";
 import "./Detail.css"
@@ -7,21 +8,25 @@ import {useForm} from "react-hook-form"
 
 export default function Detail() {
     const db = firebase.firestore()
-    const patient = db.collection("patient")
+    const patient = db.collection("patients")
 
     // useform buat validasi data form 
     const { register, handleSubmit, errors, reset  } = useForm();
 
+    const {currentUser} = useContext(AuthContext)
+
     const {nik} = useParams() // ambil no nik dari url untuk ambil data patient
     
     const [patData, setPatData] = useState({}) // simpan data pribadi patient
-    const [patRec, setPatRec] = useState([]) // simpan semua data record diambil dari database
     const [newDoc, setNewDoc] = useState(false) // atur modal untuk menambah dokter baru
     const [newRec, setNewRec] = useState(false) // atur modal untuk mengupload tanggal baru
-    const [dates, setDates] = useState([]) // simpan tanggal yang sedang di pilih
     const [desc, setDesc] = useState({}) // simpan data deskripsi yang sedang di tampilkan
+    const [docList, setDoclist] = useState([]) //simpan daftar list dokter
+    const [dateslist, setDatesList] = useState([]) // simpan daftar list tanggal
     const [docId, setDocId] = useState("") // simpan id document doctor
 
+
+    console.log(docId)
 
     useEffect(()=>{
         patient.doc(nik)
@@ -33,45 +38,36 @@ export default function Detail() {
                 console.log("Error getting documents: ", error);
             });
 
-        patient.doc(nik).collection("riwayatberobat")
+        patient.doc(nik).collection("doctorslist")
             .onSnapshot(result =>{
-                const record = []
-                result.forEach(doc =>{
-                    record.push([doc.data(), doc.id])
-                    // record.push(doc.data())
+                const doctor = []
+                result.forEach(doc => {
+                    doctor.push(doc.data())
                 })
-                console.log(record)
-                console.log(docId)
-                // setDates(record[0][0]["record"])
-                datesListOnSnapshot(record)
-                setPatRec(record)
+                setDoclist(doctor)
             })
         
     },[])
 
-    // useeffect buat mereset nilai desc kalau doctor yang lain di tekan 
     useEffect(()=>{
         setDesc({})
     },[docId])
 
-    const datesListOnSnapshot = (record) =>{
-        console.log(docId)
-        record.forEach(rec =>{
-            if (rec[1] == docId){
-                    console.log(rec[0]["record"])
-            }
-        })
+    const setDates = (doctors_id) =>{
+        patient.doc(nik).collection("medicalhistory")
+            .where("doctors_id" , "==" , doctors_id)
+            .orderBy('date', 'desc')
+            .onSnapshot(result => {
+                const dates = []
+                result.forEach(date =>{
+                    dates.push(date.data())
+                })
+                setDatesList(dates)
+            })
     }
+
     // fungsi untuk mengambah doktor baru
-    const createNewDoctor = (input)=>{
-        patient.doc(nik).collection("riwayatberobat").add(input)
-        .then((docRef) => {
-            console.log("Document written with ID: ", docRef.id);
-        })
-        .catch((error) => {
-            console.error("Error adding document: ", error);
-        });
-    }
+    
 
     // check object kosong atua tidak 
     const isEmpty = (obj) => {
@@ -80,7 +76,7 @@ export default function Detail() {
     
     return (
         <div className="container">
-            {newDoc && <NewDoctorModal sendNewDocValue={createNewDoctor}/>}
+            {newDoc && <NewDoctorModal nik={nik} setNewDoc={setNewDoc} newDoc={newDoc} patient={patient} userDoctor={currentUser}/> }
             {newRec && <AddModal docId={docId} setNewRec={setNewRec} newRec={newRec} nik={nik} patient={patient}/>}
             <div className="patient-detail">
                 <div className="title">
@@ -90,32 +86,32 @@ export default function Detail() {
                     <div className="patient-bio">
                         <div>
                             <div className="patient-img">
-                                <img src="https://i.picsum.photos/id/40/4106/2806.jpg?hmac=MY3ra98ut044LaWPEKwZowgydHZ_rZZUuOHrc3mL5mI" alt="" srcset="" height="90" width="90"/>
+                                <img src="https://i.picsum.photos/id/40/4106/2806.jpg?hmac=MY3ra98ut044LaWPEKwZowgydHZ_rZZUuOHrc3mL5mI" alt="" srcSet="" height="90" width="90"/>
                             </div>
                             <div className="patient-name">
                                 <span>{patData.name}</span>
-                                <span>20 years old | Male</span>
+                                <span>{patData.age} years old | Male</span>
                             </div>
                         </div>
                         <div>
                             <div>
                                 <span><FontAwesomeIcon icon="child"/> Weight</span>
-                                <span>55 Kg</span>
+                                <span>{patData && patData.bio_profile ? patData.bio_profile.weight : ""} Kg</span>
                             </div>
                             <div>
                                 <span><FontAwesomeIcon icon="ruler-vertical"/> Height</span>
-                                <span>170 cm</span>
+                                <span>{patData && patData.bio_profile ? patData.bio_profile.height : ""} cm</span>
                             </div>
                             <div>
                                 <span><FontAwesomeIcon icon="tint"/> Blood Type</span>
-                                <span>O+</span>
+                                <span>{patData && patData.bio_profile ? patData.bio_profile.blood : ""}</span>
                             </div>
                         </div>
                     </div>
                     <div className="patient-profile">
                         <div>
                             <span>Birth Date</span>
-                            <span>23-11-2000</span>
+                            <span>{patData.date_birth}</span>
                         </div>
                         <div>
                             <span>NIK</span>
@@ -127,11 +123,11 @@ export default function Detail() {
                         </div>
                         <div>
                             <span>Phone Number</span>
-                            <span>{patData.no_hp}</span>
+                            <span>{patData.phone_number}</span>
                         </div>
                         <div>
                             <span>Domicile</span>
-                            <span>{patData.domisili}</span>
+                            <span>{patData && patData.address ? `${patData.address.City}, ${patData.address.province}` : ""}</span>
                         </div>
                     </div>
                 </div>
@@ -149,8 +145,8 @@ export default function Detail() {
                             </div>
                         </div>
                         <div className="list">
-                            {patRec.map((rec, index) =>
-                                <Doctors key={index} Data={rec[0]} docId={rec[1]} setDocId={setDocId} setDates={setDates}/>
+                            {docList.map((data, index) =>
+                                <Doctors key={index} Data={data} setDates={setDates} setDocId={setDocId}/>
                             )}
                         </div>
                     </div>
@@ -161,13 +157,16 @@ export default function Detail() {
                                 <button className="addNewdData" onClick={()=> setNewRec(!newRec)}><FontAwesomeIcon icon="calendar-plus"/></button>
                             </div>
                         </div>
-                        <div className="list">
-                        {
-                            dates.map((date, index) =>
-                                <DatesList key={index} Data={date} setDesc={setDesc} />
-                            )
+                        {dateslist.length == 0 ? <p>Please Choose Doctor's name</p> :
+                            <div className="list">
+                            {
+                                dateslist.map((date, index) =>
+                                    <DatesList key={index} Data={date} setDesc={setDesc}/>
+                                )
+                            }
+                            </div>
                         }
-                        </div>
+                        
                     </div>
                     <div className="description">
                         <div className="title">
@@ -179,8 +178,8 @@ export default function Detail() {
                                 <p>{desc.description}</p>
                                 <p>Pengobatan</p>
                                 <ul>
-                                    {desc.treatment.map(drug=>
-                                        <li key={drug}>{drug}</li>
+                                    {desc.treatment.map((drug,index)=>
+                                        <li key={index}>{drug}</li>
                                     )}
                                     
                                 </ul>
@@ -190,37 +189,50 @@ export default function Detail() {
                         }
                         
                     </div>
-                </div>
-            </div>
+                </div> 
+             </div>
         </div>
     )
 }
 
 // component function buat nampilin list doctor
-function Doctors({Data, setDates, docId, setDocId}){
-    const dates = Data.record
+function Doctors({Data , setDates, setDocId}){
+    const {name, doctors_id, field, work_place} = Data
 
+    const [docIdentity, setDocIdentity] = useState(false)
     const DocClick= (e)=>{
-        setDates(dates)
-        setDocId(docId)
+        setDates(doctors_id)
+        setDocId(doctors_id)
+        setDocIdentity(true)
         e.currentTarget.parentNode.childNodes.forEach(node=>{
             node.classList.remove("highlight")
+            node.childNodes[1].classList.remove("show-identity")
+
         })
         e.currentTarget.classList.add("highlight")
-        
+        e.currentTarget.childNodes[1].classList.add("show-identity")
     }
 
     return(
         <div className="doctor" onClick={DocClick}>
-            <span>{Data.doctor.name}</span>
-            <FontAwesomeIcon icon="chevron-right" />
+            <div className="doctor-name">
+                <span>{name}</span>
+                <FontAwesomeIcon icon="chevron-right" />
+            </div>
+            <div className="doctor-profile ">
+                <div><span>speciality</span> : {field}</div>
+                <div><span>work place</span> : {work_place.name}</div>
+                <div><span>location</span>  : {work_place.location}</div>
+            </div>
+            
         </div>
     )
 }
 
 // component functin buat nampilin list tanggal dari tiap doctor yang berbeda
 function DatesList({Data, setDesc}){
-
+    const {date} = Data
+    
     const DateClick = (e)=>{
         setDesc(Data)
         e.currentTarget.parentNode.childNodes.forEach(node=>{
@@ -228,9 +240,10 @@ function DatesList({Data, setDesc}){
         })
         e.currentTarget.classList.toggle("highlight")
     }
+
     return(
         <div className="dates" onClick={DateClick}>
-            <span>{Data.date.toDate().toDateString()}</span>
+            <span>{date.toDate().toDateString()}</span>
             <FontAwesomeIcon icon="chevron-right" />
         </div>
     )
@@ -240,29 +253,94 @@ function DatesList({Data, setDesc}){
 
 
 // modal buat menambah dokter baru
-function NewDoctorModal({sendNewDocValue}){
-    const input ={
-        doctor:{},
-        record: []
-    }
-    
+function NewDoctorModal({nik, patient, userDoctor, setNewDoc, newDoc}){
+    const {uid} = userDoctor
+    const [added, setAdded] = useState(false)
+    const { register, handleSubmit, errors, reset  } = useForm();
 
-    const inputValue = (e, field) => {
-        input.doctor[field] = e.target.value
+    const createNewDoctor = (data) =>{
+        const {name, field, work_place} = data
+        console.log(nik)
+        const work_place_split = work_place.replace(/\s/g, '').split(",")
+        patient.doc(nik).collection("doctorslist")
+            .add({
+                name : name,
+                field: field,
+                doctors_id: uid,
+                work_place:{
+                    name: work_place_split[0],
+                    location: work_place_split[1]
+                }
+            }).then(()=>{
+                setAdded(true)
+            })
+            .catch((error)=>{
+                console.log(error)
+            })
+        // patient.doc(nik).collection("riwayatberobat").add(input)
+        // .then((docRef) => {
+        //     console.log("Document written with ID: ", docRef.id);
+        // })
+        // .catch((error) => {
+        //     console.error("Error adding document: ", error);
+        // });
     }
 
 
     return(
         <div className="modal">
-            <div>
-                <form onSubmit={e=>e.preventDefault()}>
-                    <label htmlFor="name">Nama</label>
-                        <input onChange={(e) => inputValue(e, "name")} id="name" className="addrecord" type="text" placeholder="nama" required/>
-                    <label htmlFor="speciality">Spesialis</label>
-                        <input onChange={(e) => inputValue(e, "speciality")} id="speciality" className="addrecord" type="text" placeholder="Jenis Doctor"required/>
-                    <button onClick={()=> {sendNewDocValue(input)}}>TAMBAH</button> 
+                <h3>Add New Doctor</h3>
+                {added && <p>New Doctor Succesfully Added</p>}
+                <form onSubmit={handleSubmit(createNewDoctor)} className="form">
+                    
+                    <div>
+                        <label htmlFor="name">Name</label>
+                        <input 
+                            type="text" 
+                            id="name"
+                            placeholder="Enter Doctor's name, ex: Dr. [NAME]"
+                            {...register('name', 
+                                {
+                                    required: true
+                                })
+                            } 
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="field">Field</label>
+                        <input 
+                            type="text" 
+                            id="field"
+                            placeholder="Type your Medical Field, ex: Ongkologist"
+                            {...register('field', 
+                                {
+                                    required: true
+                                })
+                            }
+                            rows="5" cols="50"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="work_place">Work Place</label>
+                        <input 
+                            type="text" 
+                            id="work_place"
+                            placeholder="Where do you work, ex: (Hospital Name), (Hospital Address)"
+                            {...register('work_place', 
+                                {
+                                    required: true
+                                })
+                            } 
+                        />
+
+                    </div>
+                    <div className="buttons">
+                        <button onClick={()=> setNewDoc(!newDoc)}>Cancel</button>
+                        <button type="submit">Upload</button>
+                        <div className="clear"></div>
+                    </div>
+                    
                 </form>
-            </div>
         </div>
     )
 }
@@ -278,23 +356,24 @@ function AddModal({docId, setNewRec, newRec , nik, patient}){
 
     const sendNewRecordValue = data =>{
         const {date, subject, description, drug, diagnose} = data;
+        console.log(docId)
         let timestamp = firebase.firestore.Timestamp.fromDate(new Date(date));
-        patient.doc(`/${nik}/riwayatberobat/${docId}`).update({
-            record: firebase.firestore.FieldValue.arrayUnion({
+        patient.doc(nik).collection('medicalhistory')
+            .add({
                 conclusion: diagnose,
                 date: timestamp,
                 description: description,
                 subject:subject,
-                treatment: drug.replace(/\s/g, '').split(",")
-            })            
-        })
-        .then(() => {
-            console.log("success");
-            setUpdated(true)
-        })
-        .catch((error) => {
-            console.error("failed: ", error);
-        });
+                treatment: drug.replace(/\s/g, '').split(","),
+                doctors_id:docId
+            })
+            .then(() => {
+                console.log("success");
+                setUpdated(true)
+            })
+            .catch((error) => {
+                console.error("failed: ", error);
+            });
     }
 
     

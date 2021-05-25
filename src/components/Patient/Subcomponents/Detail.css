@@ -1,5 +1,5 @@
 .patient-detail > div:last-child{
-    border:1px solid;
+    border:1px solid var(--mediumgrey);
     height: 280px;
     padding: 10px;
     display: flex;
@@ -11,7 +11,7 @@
     flex:40%;
     display: flex;
     flex-direction: column;
-    border:1px solid;
+    border:1px solid var(--mediumgrey);
     border-radius: 10px;
     background-color: white;
     margin:5px;
@@ -54,7 +54,7 @@
 
 .patient-profile{
     flex:60%;
-    border:1px solid;
+    border:1px solid var(--mediumgrey);
     border-radius: 10px;
     background-color: white;
     margin:5px;
@@ -112,9 +112,39 @@
     padding:10px;
     margin:5px 0;
 }
-
+.doctorlist .doctor{
+    flex-direction: column;
+}
+    .doctor .doctor-name{
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+    .doctor .doctor-profile{
+        border:none;
+        margin:0;
+        padding:0;
+        border-radius:10px;
+        max-height: 0;
+        transition: all .3s;
+        overflow: hidden;
+        background-color: var(--lightgrey);
+    }
+        .doctor .doctor-profile div{
+            padding:5px;
+        }
+            .doctor-profile span{
+                display: inline-block;
+                min-width: 80px;
+            }
+    .doctor .show-identity{
+        margin:10px;
+        padding:10px;
+        max-height: 150px;
+        border:1px solid var(--mediumgrey);
+    }
 .doctorlist .highlight, .dateslist .highlight{
-    background-color: #a0a0a0;
+    background-color: #cecece;
 }
 
 /* 
@@ -191,6 +221,7 @@
     height: auto;
     width: 500px;
     position:fixed;
+    z-index: 2;
     top:50%;
     left:50%;
     transform:translate(-50%,-50%);
@@ -209,9 +240,7 @@
     display: block;
     margin-bottom:5px;
 }
-.form > div:first-child > input{
-    width:auto
-}
+
 .form > div textarea{
     width: 100%;
     border:none;

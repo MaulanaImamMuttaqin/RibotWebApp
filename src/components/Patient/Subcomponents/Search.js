@@ -7,7 +7,7 @@ import { useHistory } from 'react-router';
 
 export default function Search() {
     const db = firebase.firestore()
-    const patient = db.collection("patient")
+    const patient = db.collection("patients")
 
     const history = useHistory()
     

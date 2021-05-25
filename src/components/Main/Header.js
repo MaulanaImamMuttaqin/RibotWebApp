@@ -9,7 +9,6 @@ export default function Header() {
         firebase.auth().signOut()
     }
     const {currentUser} = useContext(AuthContext)
-    console.log(currentUser)
     // console.log(currentUser.uid)
     const username = currentUser ? currentUser.email : ""
     const uid = currentUser ? currentUser.uid : ""
