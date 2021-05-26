@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useCallback, useEffect, useRef, useState} from 'react'
 import { motion } from "framer-motion"
 import "../maincomponent.css"
-import {Bar} from "react-chartjs-2"
+import firebase from "../../firebase";
+import {Bar, defaults } from "react-chartjs-2"
+import Chartjs from "chart.js";
 
 const monitorVariant = {
     hidden: {
@@ -25,6 +27,28 @@ const monitorVariant = {
     }
 }
 export default function Monitor() {
+    const db = firebase.firestore()
+    const analysis = db.collection("analysis_drugs")
+
+    const [drugLabels, setDrugLabels] = useState([])
+    const [drugVal, setDrugVal] = useState([])
+    const [loading, setLoading] = useState(false)
+    useEffect(()=>{
+        setLoading(true)
+        analysis.doc("Drugs_List")
+            .onSnapshot(result =>{
+                const data = result.data().drugs
+                const label = []
+                const value = []
+                data.forEach(drug=>{
+                    label.push(drug.name)
+                    value.push(drug.value)
+                })
+                setDrugLabels(label)
+                setDrugVal(value)
+                setLoading(false    )
+            })
+    },[])
     return (
         <motion.div 
         variants={monitorVariant}
@@ -32,54 +56,81 @@ export default function Monitor() {
         animate="visible"
         exit="exit"
         className="container">
-            <h1>Monitor</h1>
-            <div>
-                <BarChart/>
-            </div>
+                {/* {
+                    loading ? <p>Loading</p> :
+                    <BarChart Labels={drugLabels} Value={drugVal}/>
+                } */}
+                <BarChart Labels={drugLabels} Value={drugVal}/>
         </motion.div>
     )
 }
 
-function BarChart(){
+function BarChart({Labels, Value}){
+    const [barRef, setBarRef] = useState(null)
+    const [click, setClick] = useState(false)
+
+    // useEffect(()=>{
+    //     barChar.current.data.datasets[0].data = Value;
+    //     barChar.current.update();
+    // },[Value])
+    // console.log(barChar ? barChar.current : "" )
+
+    const randomInt = () => Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+    const charRef = useCallback((charNode)=>{
+        
+        if(charNode){
+            charNode.data.datasets[0].data.pop(0)
+            charNode.update();
+            console.log(charNode)
+        }
+        
+    },[Value])
 
     return(
         <div>
-            <Bar
-                data={{
-                    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-                    datasets: [{
-                        label: '# of Votes',
-                        data: [12, 19, 3, 5, 2, 3],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 1
-                    }]
-                }}
-                height={400}
-                width={600}
-                options={{
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }}
-            />
+            <div className="title">
+                <h2>Drug Demand</h2>
+            </div>
+            <button onClick={()=>setClick(!click)}>click</button>
+            <div>
+                <Bar ref={charRef}
+                    data={{
+                        labels: Labels,
+                        datasets: [{
+                            label: 'Drug',
+                            data: Value,
+                            backgroundColor: [
+                                'rgba(52, 175, 237, 0.5)'
+                            ],
+                            borderColor: [
+                                'rgba(52, 175, 237, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    }}
+                    height={300}
+                    width={600}
+                    options={{
+                        maintainAspectRatio: false,
+                        scales: {
+                            x : {
+                                max:20,
+                            },
+                            y : {
+                                padding:10,
+                                animations:{
+                                    duration:0
+                                }
+                            }
+
+                        },
+                        indexAxis: 'y',
+                        
+                    }}
+                    redraw={false}
+                    
+                />
+            </div>
         
         </div>
     )
