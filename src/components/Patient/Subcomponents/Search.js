@@ -26,17 +26,16 @@ export default function Search() {
     }
     const sendValue = () =>{
         setLoad(true)
-        patient.orderBy("name").get()
-        .then(result=>{
-            const items = []
-            result.forEach(doc =>{
-                items.push(doc.data())
+        fetch(`https://us-central1-ninth-incentive-312907.cloudfunctions.net/search?search=${input}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                setLoad(false)
             })
-            setPatientData(items)
-            setLoad(false)
-            table.current.style.display = "block"
-            SearchInput.current.style.height = "20%"
-        })
+            .catch(error=>{
+                setLoad(false)
+                console.log(error)
+            })
       
     }
     
