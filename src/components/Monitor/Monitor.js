@@ -66,34 +66,39 @@ export default function Monitor() {
 }
 
 function BarChart({Labels, Value}){
-    const [barRef, setBarRef] = useState(null)
-    const [click, setClick] = useState(false)
+    // const [barRef, setBarRef] = useState(null)
+    // const [click, setClick] = useState(false)
 
-    // useEffect(()=>{
-    //     barChar.current.data.datasets[0].data = Value;
-    //     barChar.current.update();
+    // // useEffect(()=>{
+    // //     barChar.current.data.datasets[0].data = Value;
+    // //     barChar.current.update();
+    // // },[Value])
+    // // console.log(barChar ? barChar.current : "" )
+
+    // const randomInt = () => Math.floor(Math.random() * (10 - 1 + 1)) + 1;
+    // const charRef = useCallback((charNode)=>{
+        
+    //     if(charNode){
+    //         // charNode.data.datasets[0].data.
+    //         // charNode.update();
+    //         charNode.data.datasets.forEach((dataset) => {
+    //             dataset.data.forEach((dat, index)=>{
+    //                 dataset.data[index] = Value[index]
+    //             })
+    //         });
+    //         console.log(charNode.data.datasets[0].data)
+    //     }
+        
     // },[Value])
-    // console.log(barChar ? barChar.current : "" )
-
-    const randomInt = () => Math.floor(Math.random() * (10 - 1 + 1)) + 1;
-    const charRef = useCallback((charNode)=>{
-        
-        if(charNode){
-            charNode.data.datasets[0].data.pop(0)
-            charNode.update();
-            console.log(charNode)
-        }
-        
-    },[Value])
-
+    
     return(
         <div>
             <div className="title">
                 <h2>Drug Demand</h2>
             </div>
-            <button onClick={()=>setClick(!click)}>click</button>
+            {/* <button onClick={()=>setClick(!click)}>click</button> */}
             <div>
-                <Bar ref={charRef}
+                <Bar 
                     data={{
                         labels: Labels,
                         datasets: [{
@@ -114,7 +119,6 @@ function BarChart({Labels, Value}){
                         maintainAspectRatio: false,
                         scales: {
                             x : {
-                                max:20,
                             },
                             y : {
                                 padding:10,
