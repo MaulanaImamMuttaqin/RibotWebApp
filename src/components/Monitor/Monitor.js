@@ -2,8 +2,10 @@ import React, { useCallback, useEffect, useRef, useState} from 'react'
 import { motion } from "framer-motion"
 import "../maincomponent.css"
 import firebase from "../../firebase";
-import {Bar, defaults } from "react-chartjs-2"
-import Chartjs from "chart.js";
+import {Bar, Line,} from 'react-chartjs-2';
+import {Utils} from "chart.js"
+import { faMeteor } from '@fortawesome/free-solid-svg-icons';
+// import Chartjs from "chart.js";
 
 const monitorVariant = {
     hidden: {
@@ -30,112 +32,194 @@ export default function Monitor() {
     const db = firebase.firestore()
     const analysis = db.collection("analysis_drugs")
 
-    const [drugLabels, setDrugLabels] = useState([])
-    const [drugVal, setDrugVal] = useState([])
-    const [loading, setLoading] = useState(false)
-    useEffect(()=>{
-        setLoading(true)
-        analysis.doc("Drugs_List")
-            .onSnapshot(result =>{
-                const data = result.data().drugs
-                const label = []
-                const value = []
-                data.forEach(drug=>{
-                    label.push(drug.name)
-                    value.push(drug.value)
-                })
-                setDrugLabels(label)
-                setDrugVal(value)
-                setLoading(false    )
-            })
-    },[])
     return (
         <motion.div 
         variants={monitorVariant}
         initial="hidden"
         animate="visible"
         exit="exit"
-        className="container">
-                {/* {
-                    loading ? <p>Loading</p> :
-                    <BarChart Labels={drugLabels} Value={drugVal}/>
-                } */}
-                <BarChart Labels={drugLabels} Value={drugVal}/>
+        className="container" style={{paddingBottom:"40px"}}>
+                
+                    
+                        <div style={{marginBottom:"40px"}}>
+                            <DrugChart Analysis={analysis}/>
+                        </div>
+                        <div style={{marginBottom:"40px"}}>
+                            <DrugMetric Analysis={analysis} />
+                        </div>
+                    
+                
+                
         </motion.div>
     )
 }
 
-function BarChart({Labels, Value}){
-    // const [barRef, setBarRef] = useState(null)
-    // const [click, setClick] = useState(false)
+function DrugChart({Analysis}){
 
-    // // useEffect(()=>{
-    // //     barChar.current.data.datasets[0].data = Value;
-    // //     barChar.current.update();
-    // // },[Value])
-    // // console.log(barChar ? barChar.current : "" )
 
-    // const randomInt = () => Math.floor(Math.random() * (10 - 1 + 1)) + 1;
-    // const charRef = useCallback((charNode)=>{
+    const [chartColor , setChartColor] = useState([]) // untuk menetukan warna dari chart
+    const [drugLabels, setDrugLabels] = useState([]) //mengumpulkan semua label untuk chart
+    const [drugVal, setDrugVal] = useState([]) // menumpulkan semua nilai masing2 label untuk chart
+    const [loading, setLoading] = useState(false) // atur loading
+
+    const rand = () => Math.floor(Math.random() * 257); // hitung nilai random dari 1 hingga 256 untuk membuat rgb value
+
+    // untuk mengambil data dari firestore
+    useEffect(()=>{
+        setLoading(true)
+        Analysis.doc("Drugs_List")
+            .onSnapshot(result =>{
+                const chartCol = []
+                const data = result.data().drugs
+                const label = []
+                const value = []
+                data.forEach(drug=>{
+                    label.push(drug.name)
+                    value.push(drug.value)
+                    chartCol.push(`rgba(${rand()}, ${rand()}, ${rand()}, 0.7)`)
+                })
+                setDrugLabels(label)
+                setDrugVal(value)
+                setLoading(false)
+                setChartColor(chartCol)
+            })
         
-    //     if(charNode){
-    //         // charNode.data.datasets[0].data.
-    //         // charNode.update();
-    //         charNode.data.datasets.forEach((dataset) => {
-    //             dataset.data.forEach((dat, index)=>{
-    //                 dataset.data[index] = Value[index]
-    //             })
-    //         });
-    //         console.log(charNode.data.datasets[0].data)
-    //     }
-        
-    // },[Value])
-    
+    },[])
+    useEffect(()=>{
+        const data = {'paramex': 16, 'panadol': 15, 'ranitidin': 7, 'antimo': 2, 'bodrex': 1, 'oskadon': 1}
+        const label = []
+        const value = []
+        for (var key in data){
+            label.push(key)
+            value.push(data[key])
+        }
+    },[])
+    // untuk mengatur warna bar dari chart secara random
+
     return(
+        
         <div>
-            <div className="title">
-                <h2>Drug Demand</h2>
-            </div>
-            {/* <button onClick={()=>setClick(!click)}>click</button> */}
+            {
+            loading ? <p>Loading</p> :
             <div>
-                <Bar 
+                <div className="title">
+                    <h2>Drug Demand</h2>
+                </div>
+                {/* <div>
+                    <Bar 
+        
+                        data={{
+                            labels: drugLabels,
+                            datasets: [{
+                                label: 'Drug',
+                                data: drugVal,
+                                backgroundColor: chartColor,
+                                borderColor: [
+                                    `rgba(${rand()}, ${rand()}, ${rand()}, 1)`
+                                ],
+                                borderWidth: 1
+                            }]
+                        }}
+                        height={300}
+                        width={600}
+                        options={{  
+                            maintainAspectRatio: false,
+                            scales: {
+                                x : {
+                                },
+                                y : {
+                                    padding:10
+                                }
+
+                            },
+                            indexAxis: 'y'
+                            
+                        }}
+                        
+                    />
+                </div> */}
+
+            </div>
+            }
+        </div>
+                
+    )
+}
+
+function DrugMetric({Analysis}){
+    const [loading, setLoading] = useState(false)
+    const [label, setLabel] = useState([])
+    // useEffect(()=>{
+    //     setLoading(true)
+    //     Analysis.doc("Drugs_Metrics")
+    //         .collection("Metrics")
+    //         .orderBy('time', 'desc')
+    //         .onSnapshot(result =>{
+    //             const metr = []
+    //             const label = []
+    //             const dates = []
+    //             const value = []
+    //             result.forEach(res=>{
+
+    //                 metr.unshift(res.data())
+    //                 dates.unshift(res.data().time.toDate().toDateString())
+    //             })
+
+    //             metr[0].drug.forEach(drg=>{
+    //                 label.push(drg.name)
+    //             })
+                
+    //             label.forEach((lab)=>{
+    //                 const val = []
+    //                 metr.forEach((met)=>{
+    //                     met.drug.forEach((drug)=>{
+    //                         if(drug.name == lab){
+    //                             val.push(drug.value)
+    //                             break;
+    //                         }else{
+    //                             val.push(0)
+    //                             break;
+    //                         }
+    //                     })
+                        
+    //                 })
+    //                 value.push(val)
+    //             })
+                
+    //             console.log(dates)
+    //             console.log(label)
+    //             console.log(metr)
+    //             console.log(value)
+
+    //         })
+        
+    // },[])
+    return (
+        <div>
+            
+            <div className="title">
+                <h2>Drug Demand Metric</h2>
+            </div>
+            <div>
+                <Line
                     data={{
-                        labels: Labels,
+                        labels: ["Wed May 19 2021", "Thu May 20 2021", "Fri May 21 2021", "Sat May 22 2021", "Sun May 23 2021", "Mon May 24 2021", "Tue May 25 2021", "Wed May 26 2021"],
                         datasets: [{
-                            label: 'Drug',
-                            data: Value,
-                            backgroundColor: [
-                                'rgba(52, 175, 237, 0.5)'
-                            ],
-                            borderColor: [
-                                'rgba(52, 175, 237, 1)'
-                            ],
+                            label: 'ranitidin',
+                            data: [10, 5, 3, 7, 9, 7, 22, 18],
+                            borderColor: 'rgb(75, 192, 192)',
                             borderWidth: 1
                         }]
                     }}
                     height={300}
                     width={600}
-                    options={{
-                        maintainAspectRatio: false,
-                        scales: {
-                            x : {
-                            },
-                            y : {
-                                padding:10,
-                                animations:{
-                                    duration:0
-                                }
-                            }
-
-                        },
-                        indexAxis: 'y',
+                    options={{  
+                        maintainAspectRatio: false
                         
                     }}
-                    redraw={false}
-                    
                 />
             </div>
-        
+            
         </div>
     )
 }
