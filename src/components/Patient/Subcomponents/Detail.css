@@ -104,7 +104,7 @@
     box-shadow: var(--shadow);     
 }
 .records > div > div:last-child{
-    max-height: 4   00px;
+    max-height: 400px;
     overflow-y: auto;
 }
 .doctorlist .doctor, .dateslist .dates{
