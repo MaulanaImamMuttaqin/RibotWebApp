@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import "./Search.css"
 import firebase from "../../../firebase";
 import { useHistory } from 'react-router';
+import axios from 'axios';
 
 export default function Search() {
     const db = firebase.firestore()
@@ -14,6 +15,7 @@ export default function Search() {
 
     const [input, setInput] = useState("")
     const [load, setLoad] = useState(false)
+    const [responData, setResponData] = useState("")
     const [patientData, setPatientData] = useState([])
 
     const SearchInput = useRef("")
@@ -26,16 +28,29 @@ export default function Search() {
     }
     const sendValue = () =>{
         setLoad(true)
-        fetch(`https://us-central1-ninth-incentive-312907.cloudfunctions.net/search?search=${input}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                setLoad(false)
-            })
-            .catch(error=>{
-                setLoad(false)
-                console.log(error)
-            })
+
+        const data = {
+            key: input
+        }
+        patient.get()
+                .then(result=>{
+                    result.forEach(res=>{
+                        console.log(res.doc)
+                        setLoad(false)
+                    })
+                })
+                .catch(error=>{
+                    console.log(error)
+                })
+        // axios.post('https://asia-southeast2-ninth-incentive-312907.cloudfunctions.net/Search',{data})
+        // .then(res => {
+        //     const result = res.data;
+        //     console.log(result)
+        //     setLoad(true)
+        // })
+        // .catch(error=>{
+        //     console.log(error);
+        // })
       
     }
     

@@ -240,10 +240,9 @@ function DatesList({Data, setDesc}){
         })
         e.currentTarget.classList.toggle("highlight")
     }
-
     return(
         <div className="dates" onClick={DateClick}>
-            <span>{date.toDate().toDateString()}</span>
+            <span>{date.toDate().toDateString()}, WIB {date.toDate().toLocaleTimeString()}</span>
             <FontAwesomeIcon icon="chevron-right" />
         </div>
     )
@@ -353,8 +352,10 @@ function AddModal({docId, setNewRec, newRec , nik, patient}){
     // }
     const [updated, setUpdated] = useState(false)
     const { register, handleSubmit, errors, reset  } = useForm();
+    const [load, setLoad] = useState(false)
 
     const sendNewRecordValue = data =>{
+        setLoad(true)
         const {date, subject, description, drug, diagnose} = data;
         console.log(docId)
         let timestamp = firebase.firestore.Timestamp.fromDate(new Date(date));
@@ -370,9 +371,11 @@ function AddModal({docId, setNewRec, newRec , nik, patient}){
             .then(() => {
                 console.log("success");
                 setUpdated(true)
+                setLoad(false)
             })
             .catch((error) => {
                 console.error("failed: ", error);
+                setLoad(false)
             });
     }
 
@@ -382,12 +385,13 @@ function AddModal({docId, setNewRec, newRec , nik, patient}){
         <div className="modal">
                 <h3>Add New Record</h3>
                 {updated && <p>Record Succesfully Added</p>}
+                {load && <p>Updating</p>}
                 <form onSubmit={handleSubmit(sendNewRecordValue)} className="form">
                     
                     <div>
                         <label htmlFor="date">Date</label>
                         <input 
-                            type="date" 
+                            type="datetime-local" 
                             id="date"
                             {...register('date', 
                                 {

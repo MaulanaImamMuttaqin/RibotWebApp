@@ -1,0 +1,13 @@
+.monitor{
+    padding-bottom: 40px;
+}
+    .Drug{
+        display: flex;
+    }
+        .Drug > div{
+            flex: 50%;
+            margin:5px;
+        }
+.monitor > div{
+    margin-bottom: 40px;
+}
