@@ -1,84 +1,111 @@
-.search {
+.patient-container{
+    margin: 0;
     height: 100vh;
-}
-.search p{
-    opacity: 0;
-    transition: opacity .3s;
-    height: 20px;
-    margin:5px;
-}
-
-.search-input{
     display: flex;
-    justify-content: center;
     align-items: center;
-    flex-direction: column;
-    height: 100%;
-    transition: height .5s;
-
-}
-.search-input input{
-    width:50vw;
-    height: 3vw;
-    border-radius: 50px;
-    margin-right:5px;
-    outline: none;
-    border:1px solid #1e90ff;
-    padding-left:30px;
-    font-size: larger;
-}
-.search-input button{
-    border-radius:100%;
-    height: 3.5vw;
-    width: 3.5vw;
-    font-size: 2vw;
-    text-align: center;
-
-}
-.search-result{
-    display: flex;
     justify-content: center;
+    flex-direction: column;
+    background-color: #f2f2f2;
 }
-.table-container{
-    width:60%;
-    display: none;
-}
-.table-head{
-    background-color: #1e90ff;
-}
-.table-head span{
-    color:white;
-    font-weight: bolder;
-}
-.table{
-    border:1px solid #ddd;
+.search{
+    height: auto;
     display: flex;
-    height: 50px;
-    border-radius: 10px;
-    margin-bottom:10px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position:relative;
+    transition: top .5s;
+    top:0;
+    z-index: 1;
 }
-.table span{
-    border-right:1px solid #ddd;
-    flex:44%;
-    text-align: center;
-    display: inline-block;
-    line-height: 50px;
+.move-top{
+    top:-180px;
 }
+    .search-form{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        border:1px solid grey;
+        border-radius:50px;
+        padding-left:20px;
+        width:50vw;
+        height: 40px;
+    }
+        .search-form *{
+            height: 90%;
+        }
+        .search-form input{
+            outline:none;
+            border:none;
+            flex: 90%;
+            border-radius:50px;
+            background-color: none;
+            font-size: 20px;
+        }
+        .search-form div{
+            flex: 10%;
+            height: 100%;
+            border-radius:50px;
+            text-align: center;
+            font-size: 25px;
+            line-height: 25px;
+            color: white;
+            background-color:var(--lightblue)
+        }
+        .search-form div:hover{
+            cursor: pointer;
+            background-color: rgb(36, 86, 140);
+        }
+        .search-form div:active{
+            background-color:rgb(42, 100, 162)
+        }
 
-.table span:first-child{
-    flex:1%;
-}
-.table span:last-child{
-    border:none
-}
-.table:nth-child(even){
-    background-color: #dfdddd;
-}
-.table:nth-child(even) span{
-    border-right:1px solid rgb(245, 244, 244);
-}
+    .search p{
+        transition: opacity .3s
+    }
 
-.table-body:hover{
-    background-color: #a0a0a0;
-    cursor:pointer
+.patients-table{
+    display: flex;
+    flex-direction: column;
+    width:90vw;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    transition: opacity 0.7s;
+    opacity: 0;
 }
+.show{
+    opacity: 1;
+}
+    table {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        -webkit-box-shadow: 0px 18px 56px -22px rgba(0,0,0,0.75);
+-moz-box-shadow: 0px 18px 56px -22px rgba(0,0,0,0.75);
+box-shadow: 0px 18px 56px -22px rgba(0,0,0,0.75);
+    }
+    
+        table td, table th {
+            border-bottom: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+            color: grey;
+            padding: 8px;
+        }
+        table td:last-child,table th:last-child{
+            border-right:none;
+        }
+        table tr:nth-child(even){background-color: #f2f2f2;}
+
+        table tr:hover {background-color: #ddd; cursor: pointer;}
+        table tr:active {background-color: rgb(194, 194, 194)}
+        table th {
+            height: 20px;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color:#f2f2f2;
+            color: black;
+        }

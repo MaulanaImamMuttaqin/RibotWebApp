@@ -17,9 +17,7 @@ export default function Body() {
             <AnimatePresence>
             <Switch location={location} key={location.key}>
               <Route path='/Patient/Detail/:nik' component={Detail}/>
-              <Route path='/Patient/Search' component={Search}/>
-              <Route path='/Patient/Add' component={Add}/>  
-              <Route path='/Patient' component={Patient}/>
+              <Route path='/Patient' component={Search}/>
               <Route path='/Monitor' component={Monitor}/>
               <Route path='/Login' component={Login}/>
               <Route path='/' component={Dashboard}/>

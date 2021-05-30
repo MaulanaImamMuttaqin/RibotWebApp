@@ -168,7 +168,7 @@ function DailyDrugDemand({Analysis}){
                 const timeLastUpdated = result.data()["date"]
                 const data = result.data()["drug"]
                 
-                const dataKeySorted = Object.keys(data).sort((a,b) => {return data[b]- data[a]})
+                const dataKeySorted = data ? Object.keys(data).sort((a,b) => {return data[b]- data[a]}) : []
                 const label = []
                 const value = []
                 dataKeySorted.forEach(key=>{
@@ -185,7 +185,7 @@ function DailyDrugDemand({Analysis}){
                 setDrugVal(value)
                 setLoading(false)
                 setChartColor(chartCol)
-                setToDate(`${timeLastUpdated.toDate().toDateString()}}, WIB ${timeLastUpdated.toDate().toLocaleTimeString()}`)
+                setToDate(`${timeLastUpdated && timeLastUpdated.toDate().toDateString()}, WIB ${timeLastUpdated && timeLastUpdated.toDate().toLocaleTimeString()}`)
             })
         
     },[])
