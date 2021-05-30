@@ -1,5 +1,5 @@
 # RibotWebApp
 Website untuk memonitor record kesehatan pasien 
 ## login: 
-admin@ribotapp.com
-admin12345
+### user: admin@ribotapp.com
+### pass: admin12345
