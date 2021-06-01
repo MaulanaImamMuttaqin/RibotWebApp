@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import firebase from "../../../firebase";
 import "./Detail.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {useForm} from "react-hook-form"
+import {set, useForm} from "react-hook-form"
 
 export default function Detail() {
     const db = firebase.firestore()
@@ -24,19 +24,18 @@ export default function Detail() {
     const [docList, setDoclist] = useState([]) //simpan daftar list dokter
     const [dateslist, setDatesList] = useState([]) // simpan daftar list tanggal
     const [docId, setDocId] = useState("") // simpan id document doctor
-
-
+    const [editWH, setEditWH] = useState(false)
+    const [heightVal, setHeightVal] = useState("")
+    const [weightVal, setWeightVal] = useState("")
     console.log(docId)
 
     useEffect(()=>{
         patient.doc(nik)
-            .get()
-            .then((result) => {
+            .onSnapshot((result) => {
                 setPatData(result.data())
+                setHeightVal(result.data().bio_profile.height)
+                setWeightVal(result.data().bio_profile.weight)
             })
-            .catch((error) => {
-                console.log("Error getting documents: ", error);
-            });
 
         patient.doc(nik).collection("doctorslist")
             .onSnapshot(result =>{
@@ -65,7 +64,15 @@ export default function Detail() {
                 setDatesList(dates)
             })
     }
-
+    const updateWH = ()=>{
+        patient.doc(nik).update({
+            "bio_profile.height": heightVal,
+            "bio_profile.weight" : weightVal
+        })
+        .then(() => {
+            setEditWH(false);
+        });
+    }   
     // fungsi untuk mengambah doktor baru
     
 
@@ -94,20 +101,54 @@ export default function Detail() {
                             </div>
                         </div>
                         <div>
+                            <div className="edit-container">
+                                <span className="edit" onClick={()=>setEditWH(!editWH)}>
+                                    <FontAwesomeIcon icon="edit"/>
+                                </span>
+                                {
+                                    editWH &&
+                                    <span className="finish" onClick={updateWH}>
+                                        finish
+                                    </span>
+                                }
+                                
+                            </div>
+                            
                             <div>
                                 <span><FontAwesomeIcon icon="child"/> Weight</span>
-                                <span>{patData && patData.bio_profile ? patData.bio_profile.weight : ""} Kg</span>
+                                {editWH ? 
+                                <span style={{borderBottom:"1px solid", paddingBottom:"1px"}}>
+                                    <input type="text" value={weightVal} onChange={(e)=> setWeightVal(e.target.value)}/> Kg
+                                </span>  : 
+                                <span>
+                                    {patData && patData.bio_profile ? patData.bio_profile.weight : ""} Kg
+                                </span>
+                                }
+                                
+                                
                             </div>
                             <div>
                                 <span><FontAwesomeIcon icon="ruler-vertical"/> Height</span>
-                                <span>{patData && patData.bio_profile ? patData.bio_profile.height : ""} cm</span>
+                                {editWH ? 
+                                <span style={{borderBottom:"1px solid", paddingBottom:"1px"}}>
+                                    <input type="text" value={heightVal} onChange={(e)=> setHeightVal(e.target.value)}/> cm
+                                </span> : 
+                                <span>
+                                    {patData && patData.bio_profile ? patData.bio_profile.height : ""} cm
+                                </span> 
+                                }
+                                
                             </div>
                             <div>
                                 <span><FontAwesomeIcon icon="tint"/> Blood Type</span>
                                 <span>{patData && patData.bio_profile ? patData.bio_profile.blood : ""}</span>
                             </div>
+                            <div>
+                                <span><FontAwesomeIcon icon="calculator"/> BMI</span>
+                                <span>"{patData && patData.bmi_status ? patData.bmi_status : ""}"</span>
+                            </div>
                         </div>
-                    </div>
+                    </div>  
                     <div className="patient-profile">
                         <div>
                             <span>Birth Date</span>

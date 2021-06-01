@@ -9,6 +9,7 @@
     position:fixed;
     top:0;
     box-shadow:  var(--shadow);
+    z-index: 2;
 }
 
 
@@ -18,19 +19,47 @@
     justify-content: space-between;
     padding: 10px;
     width:300px;
+    color: rgb(70, 70, 70)
 }
 .user div{
     margin-right: 10px;
 }
 .user .user-profile{
-    border-radius: 50%;
-    height: 45px;
-    width: 45px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border:1px solid;
+    position:relative;
 }
+    .user-profile:hover{
+        cursor: pointer;
+    }
+    .user-profile > span{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 45px;
+        width: 45px;
+        border:1px solid var(--mediumgrey);
+        border-radius: 50%;
+    }
+    .user .user-profile .userDropdown{
+        border:1px solid var(--mediumgrey);
+        position:absolute;
+        width:90px;
+        height: 20px;
+        padding:10px;
+        left: -50px;
+        top: 50px;
+        opacity: 0;
+        background-color: white;
+        border-radius: 10px;
+        transition: all .3s;
+        z-index: -1;
+    }
+    .user .user-profile .userDropDown-show{
+        top: 65px;
+        opacity: 1;
+    }
+    .user .user-profile .userDropdown > *{
+        margin:0 5px;
+    }
 .user-profile .icon{
     font-size: 20px;
 }

@@ -30,6 +30,7 @@ const patientVariant = {
   }
 
 export default function Search() {
+    const fbfunction = firebase.app().functions('asia-southeast2')
     const db = firebase.firestore()
     const patient = db.collection("patients")
 
@@ -37,6 +38,7 @@ export default function Search() {
     
 
     const [input, setInput] = useState("")
+    const [keySearh , setKeySearch] = useState("")
     const [load, setLoad] = useState(false)
     const [responData, setResponData] = useState("")
     const [patientData, setPatientData] = useState([])
@@ -51,32 +53,11 @@ export default function Search() {
     }
     const searchPatient = () =>{
         setLoad(true)
-        const data = {
-            key: input
-        }
-        axios.post('https://asia-southeast2-ninth-incentive-312907.cloudfunctions.net/Search',{data})
-            .then(res => {
-                console.log(res)
-                const result = res.data;
-                console.log(result)
-                setLoad(true)
-            })
-            .catch(error=>{
-                console.log(error);
-            })
-        patient.get()
-                .then(result=>{
-                    const patient = []
-                    result.docs.forEach(res=>{
-                        patient.push(res.data())
-                    })
-                    setPatientData(patient)
-                    setLoad(false)
-
-                })
-                .catch(error=>{
-                    console.log(error)
-                })
+        setKeySearch(input)
+        fbfunction.httpsCallable('searchUser')({key : input}).then((result)=>{
+            setPatientData(result.data)
+            setLoad(false)
+        })
     }
     
     const patientDetail = (nik)=>{
@@ -84,7 +65,7 @@ export default function Search() {
     }
 
     return (
-        <motion.div className="container"
+        <motion.div
             variants={patientVariant}
             initial="hidden"
             animate="visible"
@@ -102,7 +83,7 @@ export default function Search() {
                     <p style={{opacity: load ? '1': '0'}}>Loading...</p>
             </div>
             <div className={`patients-table move-top ${(patientData.length != 0) && "show"}`}>
-                <h3>Lists of Patients based on keyword ""</h3>
+                <h3>Lists of Patients based on keyword "{keySearh}"</h3>
                 <table >
                     <thead>
                         <tr>
@@ -132,5 +113,4 @@ export default function Search() {
         </motion.div>
     )
 }
-
 
