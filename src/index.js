@@ -5,10 +5,11 @@ import App from './App';
 import { BrowserRouter as Router} from "react-router-dom";
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChartLine, faHome, faHospitalUser, faSearch, faPlus , faUser, 
-  faChild, faRulerVertical, faTint, faUserPlus, faChevronRight, faCalendarPlus, faTimes, faCalculator, faEdit, faSignOutAlt} from '@fortawesome/free-solid-svg-icons'
+  faChild, faRulerVertical, faTint, faUserPlus, faChevronRight, faCalendarPlus,
+   faTimes, faCalculator, faEdit, faSignOutAlt, faUserMd} from '@fortawesome/free-solid-svg-icons'
 
 library.add(faChartLine, faHome, faHospitalUser, faSearch, faPlus, faUser , 
-  faChild, faRulerVertical, faTint,faUserPlus, faChevronRight , faCalendarPlus, faTimes, faCalculator, faEdit, faSignOutAlt)
+  faChild, faRulerVertical, faTint,faUserPlus, faChevronRight , faCalendarPlus, faTimes, faCalculator, faEdit, faSignOutAlt, faUserMd)
 ReactDOM.render(
   <React.StrictMode>
     <Router>

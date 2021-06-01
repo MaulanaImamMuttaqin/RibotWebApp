@@ -1,0 +1,150 @@
+.dashboard-container{
+    display: grid;
+    grid-template-columns: 31.5vw 31.5vw 31.5vw;
+    grid-template-rows: 12vw 25vw 20vw;
+    grid-template-areas: 
+      "patients doctor item1"
+      "visits visits online"
+      "chart1 chart2 online";
+    height: auto;
+    gap: 10px;
+}
+.dashboard-container >  div{
+    /* border:1px solid; */
+    
+}
+
+.total{
+
+  }
+    .total > div{
+        border-radius:20px;
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        height: 100%;
+    }
+        .total > div > div{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .total > div > .content{
+            justify-content: start;
+            align-items: baseline;
+            flex-direction: column;
+        }
+            .content p{
+                margin:5px;
+                font-weight:bolder;
+            }
+                .content p:first-child{
+                    font-size: 20px;
+                }
+                .content p:last-child{
+                    font-size: 40px;
+                }
+                    .content p:last-child::after{
+                        content: " person";
+                        font-size: 20px;
+                    }
+            .total div .logo{
+                flex:30%;
+                height: 70%;
+                border-radius: 50%;
+                
+            }
+            .total div .logo *{
+                font-size: 50px;
+            }
+            .total div div:last-child{
+                flex:80%;
+                height: 70%;
+            }
+
+
+
+.patients{
+    grid-area: patients;
+    position:relative
+}
+    .patients div > .add-patient{
+        position:absolute;
+        right: 0;
+        top:0;
+        margin:10px;
+        border:1px solid var(--mediumgrey);
+        padding:10px;
+        font-size: 20px;
+        border-radius: 0 20px 0 20px;
+    }
+        .patients div > .add-patient:hover{
+            cursor:pointer;
+        }
+.doctor {
+    grid-area: doctor;
+}
+
+.item1 {
+    grid-area: item1;
+}
+
+
+.visits{
+    grid-area: visits;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding:10px 30px;
+    border-radius:20px;
+    box-shadow: var(--shadow);
+}   
+    .visits div:first-child{
+        width:99%;
+    }
+    .visits div:last-child{
+        height:90%;
+        width:99%;
+    }
+
+.online{
+    grid-area: online;
+    border-radius:20px;
+    box-shadow: var(--shadow);
+}
+    .online >div{
+        padding:5px 15px;
+    }
+        .online >div:first-child > *{
+            border-bottom:3px solid;
+            padding-bottom: 4px;
+        }
+        .online >div:last-child{
+            height: 80%;
+            overflow-y: auto;
+        }
+        .online >div:last-child > p{
+            border:1px solid var(--mediumgrey);
+            padding:5px;
+            border-radius: 5px;
+        }
+
+
+.doughnutChart{
+    padding:10px 30px;
+    border-radius:20px;
+    box-shadow: var(--shadow);
+}
+    .doughnutChart div{
+        height: 100%;
+        
+    }
+.chart1{
+    grid-area: chart1;
+}
+    
+.chart2{
+    grid-area: chart2;
+}

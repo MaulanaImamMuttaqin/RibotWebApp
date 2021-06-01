@@ -80,7 +80,8 @@ export default function Search() {
                     <input type="text" placeholder="Please insert patients name you are looking for" onChange={e => inputValue(e)}/>
                     <div onClick={searchPatient}><FontAwesomeIcon icon="search"/></div>
                 </div>
-                    <p style={{opacity: load ? '1': '0'}}>Loading...</p>
+                    <p style={{margin:"5px"}}>send empty to list all patients</p>
+                    <p style={{opacity: load ? '1': '0', margin:"5px"}}>Loading...</p>
             </div>
             <div className={`patients-table move-top ${(patientData.length != 0) && "show"}`}>
                 <h3>Lists of Patients based on keyword "{keySearh}"</h3>
