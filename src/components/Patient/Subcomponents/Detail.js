@@ -294,7 +294,8 @@ function DatesList({Data, setDesc}){
 
 // modal buat menambah dokter baru
 function NewDoctorModal({nik, patient, userDoctor, setNewDoc, newDoc}){
-    const {uid} = userDoctor
+    const rand = () => Math.floor(Math.random() * 1000000);
+    const doctors_id = `${rand()}`
     const [added, setAdded] = useState(false)
     const { register, handleSubmit, errors, reset  } = useForm();
 
@@ -306,7 +307,7 @@ function NewDoctorModal({nik, patient, userDoctor, setNewDoc, newDoc}){
             .add({
                 name : name,
                 field: field,
-                doctors_id: uid,
+                doctors_id: doctors_id,
                 work_place:{
                     name: work_place_split[0],
                     location: work_place_split[1]

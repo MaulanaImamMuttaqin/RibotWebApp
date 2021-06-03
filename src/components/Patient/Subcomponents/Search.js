@@ -38,8 +38,9 @@ export default function Search() {
     
 
     const [input, setInput] = useState("")
-    const [keySearh , setKeySearch] = useState("")
+    const [keySearch , setKeySearch] = useState("")
     const [load, setLoad] = useState(false)
+    const [isEmpty, setIsEmpty] = useState(false)
     const [responData, setResponData] = useState("")
     const [patientData, setPatientData] = useState([])
 
@@ -55,6 +56,11 @@ export default function Search() {
         setLoad(true)
         setKeySearch(input)
         fbfunction.httpsCallable('searchUser')({key : input}).then((result)=>{
+            if(result.data.length > 0 ){
+                setIsEmpty(false)
+            }else{
+                setIsEmpty(true)
+            }
             setPatientData(result.data)
             setLoad(false)
         })
@@ -82,9 +88,10 @@ export default function Search() {
                 </div>
                     <p style={{margin:"5px"}}>send empty to list all patients</p>
                     <p style={{opacity: load ? '1': '0', margin:"5px"}}>Loading...</p>
+                    <p style={{opacity: isEmpty ? '1': '0', margin:"5px", color:"red"}}>No Result for keyword " {keySearch} "</p>
             </div>
             <div className={`patients-table move-top ${(patientData.length != 0) && "show"}`}>
-                <h3>Lists of Patients based on keyword "{keySearh}"</h3>
+                <h3>Lists of Patients based on keyword "{keySearch}"</h3>
                 <table >
                     <thead>
                         <tr>

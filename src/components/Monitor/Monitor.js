@@ -42,15 +42,15 @@ export default function Monitor() {
         className="container monitor">
                 
                         <div className="Drug">
-                            <div >
+                            <div className="metric-container">
                                 <DrugChart Analysis={analysis}/>
                             </div>
-                            <div>
+                            <div className="metric-container">
                                 <DailyDrugDemand Analysis={analysis}/>
                             </div>
                         </div>
                         
-                        <div>
+                        <div className="metric-container">
                             <DrugMetric Analysis={analysis} />
                         </div>
                     
