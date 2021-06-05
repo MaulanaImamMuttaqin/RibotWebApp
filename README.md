@@ -3,10 +3,12 @@
 RibotWebApp is part of of the Riwayat Berobat app from the Capstone Project by B21-CAP0480 team build in web application 
 
 #### WebApp
-url: https://ribot-web-app.netlify.app/ \
+url: [RibotebApp](https://ribot-web-app.netlify.app/) \
 email : admin@ribotapp.com \
 password : admin12345
 
+#### Python Machine Learning Notebook
+[Python ML](https://github.com/MaulanaImamMuttaqin/RibotWebApp/blob/master/RibotApp_ML.ipynb)
 
 #### Features
 1. Search Patients Name
