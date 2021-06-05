@@ -3,7 +3,7 @@
 RibotWebApp is part of of the Riwayat Berobat app from the Capstone Project by B21-CAP0480 team build in web application 
 
 ####  <ins> WebApp </ins>
-url: [RibotebApp](https://ribot-web-app.netlify.app/) \
+url: [RibotWebApp](https://ribot-web-app.netlify.app/) \
 email : admin@ribotapp.com \
 password : admin12345
 
